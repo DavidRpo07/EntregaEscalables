@@ -278,7 +278,7 @@ def tabla(salida: Path) -> dict:
         for esc in ("frio", "caliente"):
             e3 = percentiles(datos[esc], r["metodo"])
             fuente = "1 corrida"
-            if qid in medianas:   # E3 (e): Q1–Q3 = mediana de 3 corridas
+            if qid in medianas:   # E3 (e): Q1–Q3 (y Q4/Q5 con índice) = mediana de 3 corridas
                 e3, fuente = medianas[qid][esc]["mediana"], f"mediana de {len(medianas[qid][esc]['repeticiones'])}"
             otro = percentiles(datos[esc], "exclusive" if r["metodo"] == "inclusive" else "inclusive")
             con_objetivo = r["fase"] != "antes_indice"
@@ -384,6 +384,8 @@ def main():
     t.add_argument("--salida")
     t.add_argument("--mediana-q1-q3", action="store_true",
                    help="además, Q1–Q3 tres veces; la tabla usa la mediana (optimización e)")
+    t.add_argument("--mediana-q4-q5", action="store_true",
+                   help="además, Q4/Q5 (con índice) tres veces; la tabla usa la mediana")
     c = sub.add_parser("consultas")
     c.add_argument("--salida", required=True)
     f = sub.add_parser("fase4")
@@ -440,8 +442,9 @@ def main():
         subprocess.run([sys.executable, str(Path(__file__).with_name("manifest.py")), "--salida",
                         str(salida / "manifest.json")], check=True)
         consultas(salida)
-        if a.mediana_q1_q3:
-            medir(salida, ["q1", "q2", "q3"], "mediana", 3)
+        consultas_mediana = (["q1", "q2", "q3"] if a.mediana_q1_q3 else []) + (["q4", "q5"] if a.mediana_q4_q5 else [])
+        if consultas_mediana:   # Q4/Q5: después del índice (crear_indice_q4/q5 ya corrió en consultas())
+            medir(salida, consultas_mediana, "mediana", 3)
         fase4(salida)
         tabla(salida)
 

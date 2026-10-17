@@ -1,0 +1,297 @@
+===== medir_q4.py random_page_cost_1_1_r1
+==============================================
+SELECCIONANDO PARÁMETROS (HOT Y COLD) PARA Q4
+==============================================
+Pool Caliente: 50 proveedores (Top).
+Pool Frío: 50 proveedores (Cola Larga).
+
+==============================================
+MEDICIÓN Q4 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/optimizaciones/f_q4q5/q4_random_page_cost_1_1_r1.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Proveedores - 100 runs):
+  p50: 2.103 ms | p95: 7.399 ms | p99: 11.886 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.343 ms | p95: 0.378 ms | p99: 0.389 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Sort  (cost=14427.60..14434.35 rows=2699 width=124) (actual time=12.512..12.564 rows=24 loops=1)
+  Sort Key: (((date_trunc('month'::text, o.fecha_creacion)))::date) DESC, l.categoria
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=23035 read=908
+  ->  HashAggregate  (cost=14159.07..14273.78 rows=2699 width=124) (actual time=12.489..12.559 rows=24 loops=1)
+        Group Key: ((date_trunc('month'::text, o.fecha_creacion)))::date, l.categoria, o.proveedor_id
+        Batches: 1  Memory Usage: 121kB
+        Buffers: shared hit=23035 read=908
+        ->  Finalize HashAggregate  (cost=12607.03..13281.83 rows=26992 width=76) (actual time=10.764..11.948 rows=6570 loops=1)
+              Group Key: l.categoria, (date_trunc('month'::text, o.fecha_creacion)), o.orden_id
+              Batches: 1  Memory Usage: 2321kB
+              Buffers: shared hit=23035 read=908
+              ->  Gather  (cost=9879.64..12269.62 rows=22494 width=73) (actual time=9.035..9.619 rows=6570 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=23035 read=908
+                    ->  Partial HashAggregate  (cost=8879.64..9020.22 rows=11247 width=73) (actual time=8.030..8.271 rows=2190 loops=3)
+                          Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+                          Batches: 1  Memory Usage: 1169kB
+                          Buffers: shared hit=23035 read=908
+                          Worker 0:  Batches: 1  Memory Usage: 913kB
+                          Worker 1:  Batches: 1  Memory Usage: 913kB
+                          ->  Nested Loop  (cost=97.70..8682.81 rows=11247 width=64) (actual time=0.273..6.864 rows=8931 loops=3)
+                                Buffers: shared hit=23035 read=908
+                                ->  Parallel Bitmap Heap Scan on orden_compra o  (cost=97.28..4540.99 rows=2782 width=40) (actual time=0.260..1.851 rows=2190 loops=3)
+                                      Recheck Cond: ((proveedor_id = 69445) AND ((estado)::text = 'CONFIRMADA'::text))
+                                      Heap Blocks: exact=1780
+                                      Buffers: shared hit=3959 read=136
+                                      ->  Bitmap Index Scan on idx_orden_proveedor_confirmada  (cost=0.00..95.61 rows=6678 width=0) (actual time=0.497..0.497 rows=6570 loops=1)
+                                            Index Cond: (proveedor_id = 69445)
+                                            Buffers: shared hit=2 read=40
+                                ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..1.41 rows=7 width=24) (actual time=0.002..0.002 rows=4 loops=6570)
+                                      Index Cond: (orden_id = o.orden_id)
+                                      Heap Fetches: 3
+                                      Buffers: shared hit=19076 read=772
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.068 ms
+Execution Time: 12.636 ms
+
+===== medir_q4.py random_page_cost_1_1_r2
+==============================================
+SELECCIONANDO PARÁMETROS (HOT Y COLD) PARA Q4
+==============================================
+Pool Caliente: 50 proveedores (Top).
+Pool Frío: 50 proveedores (Cola Larga).
+
+==============================================
+MEDICIÓN Q4 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/optimizaciones/f_q4q5/q4_random_page_cost_1_1_r2.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Proveedores - 100 runs):
+  p50: 2.175 ms | p95: 7.068 ms | p99: 15.210 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.310 ms | p95: 0.380 ms | p99: 0.389 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Sort  (cost=14427.60..14434.35 rows=2699 width=124) (actual time=12.473..12.536 rows=24 loops=1)
+  Sort Key: (((date_trunc('month'::text, o.fecha_creacion)))::date) DESC, l.categoria
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=23043 read=900
+  ->  HashAggregate  (cost=14159.07..14273.78 rows=2699 width=124) (actual time=12.450..12.531 rows=24 loops=1)
+        Group Key: ((date_trunc('month'::text, o.fecha_creacion)))::date, l.categoria, o.proveedor_id
+        Batches: 1  Memory Usage: 121kB
+        Buffers: shared hit=23043 read=900
+        ->  Finalize HashAggregate  (cost=12607.03..13281.83 rows=26992 width=76) (actual time=10.719..11.907 rows=6570 loops=1)
+              Group Key: l.categoria, (date_trunc('month'::text, o.fecha_creacion)), o.orden_id
+              Batches: 1  Memory Usage: 2321kB
+              Buffers: shared hit=23043 read=900
+              ->  Gather  (cost=9879.64..12269.62 rows=22494 width=73) (actual time=8.983..9.591 rows=6570 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=23043 read=900
+                    ->  Partial HashAggregate  (cost=8879.64..9020.22 rows=11247 width=73) (actual time=8.027..8.271 rows=2190 loops=3)
+                          Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+                          Batches: 1  Memory Usage: 1169kB
+                          Buffers: shared hit=23043 read=900
+                          Worker 0:  Batches: 1  Memory Usage: 913kB
+                          Worker 1:  Batches: 1  Memory Usage: 913kB
+                          ->  Nested Loop  (cost=97.70..8682.81 rows=11247 width=64) (actual time=0.285..6.853 rows=8931 loops=3)
+                                Buffers: shared hit=23043 read=900
+                                ->  Parallel Bitmap Heap Scan on orden_compra o  (cost=97.28..4540.99 rows=2782 width=40) (actual time=0.268..1.842 rows=2190 loops=3)
+                                      Recheck Cond: ((proveedor_id = 69445) AND ((estado)::text = 'CONFIRMADA'::text))
+                                      Heap Blocks: exact=1777
+                                      Buffers: shared hit=3960 read=135
+                                      ->  Bitmap Index Scan on idx_orden_proveedor_confirmada  (cost=0.00..95.61 rows=6678 width=0) (actual time=0.497..0.497 rows=6570 loops=1)
+                                            Index Cond: (proveedor_id = 69445)
+                                            Buffers: shared hit=2 read=40
+                                ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..1.41 rows=7 width=24) (actual time=0.002..0.002 rows=4 loops=6570)
+                                      Index Cond: (orden_id = o.orden_id)
+                                      Heap Fetches: 3
+                                      Buffers: shared hit=19083 read=765
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.070 ms
+Execution Time: 12.607 ms
+
+===== medir_q4.py random_page_cost_1_1_r3
+==============================================
+SELECCIONANDO PARÁMETROS (HOT Y COLD) PARA Q4
+==============================================
+Pool Caliente: 50 proveedores (Top).
+Pool Frío: 50 proveedores (Cola Larga).
+
+==============================================
+MEDICIÓN Q4 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/optimizaciones/f_q4q5/q4_random_page_cost_1_1_r3.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Proveedores - 100 runs):
+  p50: 2.013 ms | p95: 6.886 ms | p99: 12.580 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.309 ms | p95: 0.390 ms | p99: 0.404 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Sort  (cost=14427.60..14434.35 rows=2699 width=124) (actual time=12.477..12.532 rows=24 loops=1)
+  Sort Key: (((date_trunc('month'::text, o.fecha_creacion)))::date) DESC, l.categoria
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=23035 read=908
+  ->  HashAggregate  (cost=14159.07..14273.78 rows=2699 width=124) (actual time=12.455..12.528 rows=24 loops=1)
+        Group Key: ((date_trunc('month'::text, o.fecha_creacion)))::date, l.categoria, o.proveedor_id
+        Batches: 1  Memory Usage: 121kB
+        Buffers: shared hit=23035 read=908
+        ->  Finalize HashAggregate  (cost=12607.03..13281.83 rows=26992 width=76) (actual time=10.712..11.898 rows=6570 loops=1)
+              Group Key: l.categoria, (date_trunc('month'::text, o.fecha_creacion)), o.orden_id
+              Batches: 1  Memory Usage: 2321kB
+              Buffers: shared hit=23035 read=908
+              ->  Gather  (cost=9879.64..12269.62 rows=22494 width=73) (actual time=8.957..9.554 rows=6570 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=23035 read=908
+                    ->  Partial HashAggregate  (cost=8879.64..9020.22 rows=11247 width=73) (actual time=7.954..8.203 rows=2190 loops=3)
+                          Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+                          Batches: 1  Memory Usage: 1169kB
+                          Buffers: shared hit=23035 read=908
+                          Worker 0:  Batches: 1  Memory Usage: 913kB
+                          Worker 1:  Batches: 1  Memory Usage: 913kB
+                          ->  Nested Loop  (cost=97.70..8682.81 rows=11247 width=64) (actual time=0.286..6.787 rows=8931 loops=3)
+                                Buffers: shared hit=23035 read=908
+                                ->  Parallel Bitmap Heap Scan on orden_compra o  (cost=97.28..4540.99 rows=2782 width=40) (actual time=0.270..1.868 rows=2190 loops=3)
+                                      Recheck Cond: ((proveedor_id = 69445) AND ((estado)::text = 'CONFIRMADA'::text))
+                                      Heap Blocks: exact=1743
+                                      Buffers: shared hit=3959 read=136
+                                      ->  Bitmap Index Scan on idx_orden_proveedor_confirmada  (cost=0.00..95.61 rows=6678 width=0) (actual time=0.510..0.510 rows=6570 loops=1)
+                                            Index Cond: (proveedor_id = 69445)
+                                            Buffers: shared hit=2 read=40
+                                ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..1.41 rows=7 width=24) (actual time=0.002..0.002 rows=4 loops=6570)
+                                      Index Cond: (orden_id = o.orden_id)
+                                      Heap Fetches: 3
+                                      Buffers: shared hit=19076 read=772
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.075 ms
+Execution Time: 12.609 ms
+
+===== medir_q5.py random_page_cost_1_1_r1
+==============================================
+SELECCIONANDO PROVEEDORES Y MIDIENDO Q5 BASE
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/optimizaciones/f_q4q5/q5_random_page_cost_1_1_r1.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Proveedor Hot - 100 runs):
+  p50: 0.289 ms | p95: 0.409 ms | p99: 0.450 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.158 ms | p95: 0.192 ms | p99: 0.205 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Limit  (cost=0.42..2.06 rows=50 width=51) (actual time=0.003..0.008 rows=50 loops=1)
+  Buffers: shared hit=5
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..312.08 rows=9512 width=51) (actual time=0.002..0.006 rows=50 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Heap Fetches: 0
+        Buffers: shared hit=5
+Planning Time: 0.010 ms
+Execution Time: 0.012 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Limit  (cost=0.42..3.34 rows=41 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..3.34 rows=41 width=51) (actual time=0.002..0.002 rows=15 loops=1)
+        Index Cond: (proveedor_id = 3)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.008 ms
+Execution Time: 0.006 ms
+
+===== medir_q5.py random_page_cost_1_1_r2
+==============================================
+SELECCIONANDO PROVEEDORES Y MIDIENDO Q5 BASE
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/optimizaciones/f_q4q5/q5_random_page_cost_1_1_r2.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Proveedor Hot - 100 runs):
+  p50: 0.226 ms | p95: 0.285 ms | p99: 0.295 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.115 ms | p95: 0.154 ms | p99: 0.163 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Limit  (cost=0.42..2.06 rows=50 width=51) (actual time=0.002..0.007 rows=50 loops=1)
+  Buffers: shared hit=5
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..312.08 rows=9512 width=51) (actual time=0.002..0.005 rows=50 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Heap Fetches: 0
+        Buffers: shared hit=5
+Planning Time: 0.011 ms
+Execution Time: 0.011 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Limit  (cost=0.42..3.34 rows=41 width=51) (actual time=0.002..0.004 rows=15 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..3.34 rows=41 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+        Index Cond: (proveedor_id = 3)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.014 ms
+Execution Time: 0.006 ms
+
+===== medir_q5.py random_page_cost_1_1_r3
+==============================================
+SELECCIONANDO PROVEEDORES Y MIDIENDO Q5 BASE
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/optimizaciones/f_q4q5/q5_random_page_cost_1_1_r3.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Proveedor Hot - 100 runs):
+  p50: 0.173 ms | p95: 0.192 ms | p99: 0.211 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.126 ms | p95: 0.147 ms | p99: 0.157 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Limit  (cost=0.42..2.06 rows=50 width=51) (actual time=0.002..0.007 rows=50 loops=1)
+  Buffers: shared hit=5
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..312.08 rows=9512 width=51) (actual time=0.002..0.005 rows=50 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Heap Fetches: 0
+        Buffers: shared hit=5
+Planning Time: 0.009 ms
+Execution Time: 0.011 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Limit  (cost=0.42..3.34 rows=41 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..3.34 rows=41 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+        Index Cond: (proveedor_id = 3)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.008 ms
+Execution Time: 0.005 ms
+

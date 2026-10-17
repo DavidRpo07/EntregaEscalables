@@ -124,7 +124,7 @@ ejecuciones por escenario cada vez) y la tabla usa la mediana de cada percentil
 ## Tabla final
 
 `evidencia/linea_base/20261017T035415Z/tabla_final.md` (E2 / línea base E3 / final E3 / objetivo /
-¿cumple? / mejora vs. línea base E3). Resumen:
+¿cumple? / mejora vs. línea base E3). **Reemplazada como oficial por `20261017T044939Z` (ver f).** Resumen de la primera:
 
 - **Fase 4:** 413,69 (E2) → 296,42 (línea base E3) → **1.036,37 req/s** (final); objetivo ≥ 459,66: cumple.
 - **Q1–Q3:** los 18 valores cumplen 0,90 × E2.
@@ -148,3 +148,68 @@ mediana de 3). Q1–Q3 cumplen el objetivo, pero ese cumplimiento depende del en
 4. Q4/Q5 «antes_indice»: solo referencia, sin objetivo.
 5. Antes de las repeticiones del lab, la base se dejó como en las corridas originales (sin órdenes de la
    Fase 4 ni índices de Q4/Q5); después se recrearon los índices finales (`crear_indice_q4/q5.py`).
+
+## f. Intento final sobre Q4 y Q5 (sin cambiar consulta, escenario ni métrica)
+
+Carpeta `f_q4q5/`. Lab apagado; cada cambio por separado con `linea_base.py medir --consultas q4 q5
+--repeticiones 3` (mediana de 3).
+
+**1. Dónde se va el tiempo** (`servidor_vs_cliente/`, `lab/momento1/analisis_q4q5.py`): misma secuencia
+de parámetros que los `medir_q*.py`; por ejecución, tiempo del cliente y, enseguida, `EXPLAIN (ANALYZE,
+BUFFERS)` con el mismo parámetro (planificación + ejecución). p50 en ms:
+
+| Consulta | Cliente (host) | Servidor | Servidor / cliente | Cliente (contenedor) | Servidor (contenedor) |
+|---|---|---|---|---|---|
+| Q4 frio | 0.298 | 0.11 | 37 % | 0.164 | 0.101 |
+| Q4 caliente | 3.167 | 2.091 | 66 % | 1.585 | 1.489 |
+| Q5 frio | 0.209 | 0.019 | 9 % | 0.05 | 0.012 |
+| Q5 caliente | 0.305 | 0.024 | 8 % | 0.082 | 0.017 |
+
+`SELECT 1` (ida y vuelta mínima): ~0,13 ms desde el host y 0,031 ms desde un contenedor en la red de
+Postgres. Q4 caliente se va en el servidor (Parallel Bitmap Heap Scan sobre `orden_compra` + Index Only
+Scan de `linea_orden`, todo en `shared hit`); Q4 frío y Q5 se resuelven en 0,01–0,1 ms en el servidor y
+el resto es cliente + red. `planes_q4q5.txt` tiene el plan con BUFFERS de cada escenario.
+
+**2. Cambios probados por separado** (`medir_<cambio>.json`; referencia = promedio de `control_1` y
+`control_2`; media geométrica de los 12 percentiles, < 1 mejora):
+
+| Cambio | Media geométrica | Decisión |
+|---|---|---|
+| `jit = off` | 1,040 | descartado (no hay JIT en estos planes: costo bajo el umbral) |
+| `random_page_cost = 1.1` | 0,902 en la prueba aislada; **1,09 · 1,47 · 1,14** en el A/B intercalado (`ab_rpc/`) | descartado: el plan no cambia y la mejora no se repite |
+| `work_mem = 32MB` | 0,925 | descartado: los planes ya usan 1 batch y sort en memoria (27–193 kB); sin mecanismo, dentro del ruido |
+| Índice de Q4 con `orden_id` en el INCLUDE | 0,988 | descartado: el planificador sigue con Bitmap Heap Scan (no pasa a Index Only Scan) |
+| `CLUSTER orden_compra USING idx_orden_proveedor_fecha` | 0,992 | descartado: baja los heap blocks de Q4 caliente (1.741 → 53) pero no el tiempo; el índice parcial no admite CLUSTER |
+
+Ruido: `control_2` frente al promedio da 0,951, y 6 mediciones de control idénticas (`ruido_6_controles/`)
+dan 0,93–1,05. Ningún cambio supera ese ruido de forma repetible: **no se conserva ninguno**.
+
+**3. Red del entorno (análisis, no resultado oficial)** (`red_contenedor/`): los mismos `medir_q4/q5.py`
+ejecutados desde un contenedor con `--network container:postgres-escalables` (host = promedio de una
+medición antes y otra después):
+
+| Consulta y métrica | Host (ms) | Contenedor (ms) | Diferencia |
+|---|---|---|---|
+| Q4 frio p50 | 0.334 | 0.165 | 51 % |
+| Q4 frio p95 | 0.369 | 0.184 | 50 % |
+| Q4 frio p99 | 0.384 | 0.2 | 48 % |
+| Q4 caliente p50 | 1.889 | 1.545 | 18 % |
+| Q4 caliente p95 | 6.199 | 5.364 | 13 % |
+| Q4 caliente p99 | 9.915 | 7.245 | 27 % |
+| Q5 frio p50 | 0.126 | 0.049 | 61 % |
+| Q5 frio p95 | 0.15 | 0.061 | 59 % |
+| Q5 frio p99 | 0.167 | 0.066 | 60 % |
+| Q5 caliente p50 | 0.209 | 0.082 | 61 % |
+| Q5 caliente p95 | 0.238 | 0.092 | 61 % |
+| Q5 caliente p99 | 0.265 | 0.112 | 58 % |
+
+El reenvío de puertos de Docker Desktop agrega ~0,1 ms por consulta: es 50–60 % de Q4 frío y Q5. Con
+ese costo descontado, Q4 frío y Q5 quedarían muy por debajo del objetivo, pero la medición oficial
+conserva el mismo método del E2 (cliente en el host).
+
+**4. Tabla final oficial:** como no se conservó ningún cambio, se volvió a medir el mismo estado con la
+base recargada (el CLUSTER la había reordenado) y con la mediana de 3 también para Q4/Q5:
+`evidencia/linea_base/20261017T044939Z/tabla_final.md` (`make linea-base MEDIANA_Q1_Q3=on
+MEDIANA_Q4_Q5=on`). La corrida final anterior (`20261017T035415Z`, mismo código) queda como repetición:
+19/30 frente a 20/30 objetivos de consultas; difieren por el ruido del entorno (p. ej. Q3 frío p95 0,161
+frente a 0,497 ms: una de las tres repeticiones nuevas dio 0,727).

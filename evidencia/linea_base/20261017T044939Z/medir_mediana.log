@@ -1,0 +1,633 @@
+===== medir_q1.py mediana_r1
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q1_mediana_r1.csv (200 ejecuciones)
+RESULTADOS DE MEDICIÓN PARA Q1 (200 EJECUCIONES)
+Frío -> p50: 0.163 ms | p95: 0.203 ms | p99: 0.877 ms
+Caliente -> p50: 0.157 ms | p95: 0.197 ms | p99: 0.208 ms
+Nested Loop Left Join  (cost=0.58..16.63 rows=1 width=47) (actual time=0.004..0.004 rows=1 loops=1)
+  Join Filter: (p.proveedor_id = c.proveedor_id)
+  Buffers: shared hit=6
+  ->  Index Scan using pk_proveedor on proveedor p  (cost=0.29..8.31 rows=1 width=15) (actual time=0.002..0.002 rows=1 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Buffers: shared hit=3
+  ->  Index Scan using idx_contrato_proveedor_vigencia on contrato_suministro c  (cost=0.29..8.30 rows=1 width=40) (actual time=0.001..0.001 rows=1 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Buffers: shared hit=3
+Planning Time: 0.020 ms
+Execution Time: 0.009 ms
+Nested Loop Left Join  (cost=0.58..16.63 rows=1 width=47) (actual time=0.003..0.003 rows=1 loops=1)
+  Join Filter: (p.proveedor_id = c.proveedor_id)
+  Buffers: shared hit=5
+  ->  Index Scan using pk_proveedor on proveedor p  (cost=0.29..8.31 rows=1 width=15) (actual time=0.002..0.002 rows=1 loops=1)
+        Index Cond: (proveedor_id = 90001)
+        Buffers: shared hit=3
+  ->  Index Scan using idx_contrato_proveedor_vigencia on contrato_suministro c  (cost=0.29..8.30 rows=1 width=40) (actual time=0.001..0.001 rows=0 loops=1)
+        Index Cond: (proveedor_id = 90001)
+        Buffers: shared hit=2
+Planning Time: 0.019 ms
+Execution Time: 0.006 ms
+
+===== medir_q1.py mediana_r2
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q1_mediana_r2.csv (200 ejecuciones)
+RESULTADOS DE MEDICIÓN PARA Q1 (200 EJECUCIONES)
+Frío -> p50: 0.155 ms | p95: 0.221 ms | p99: 0.548 ms
+Caliente -> p50: 0.134 ms | p95: 0.153 ms | p99: 0.163 ms
+Nested Loop Left Join  (cost=0.58..16.63 rows=1 width=47) (actual time=0.004..0.004 rows=1 loops=1)
+  Join Filter: (p.proveedor_id = c.proveedor_id)
+  Buffers: shared hit=6
+  ->  Index Scan using pk_proveedor on proveedor p  (cost=0.29..8.31 rows=1 width=15) (actual time=0.002..0.002 rows=1 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Buffers: shared hit=3
+  ->  Index Scan using idx_contrato_proveedor_vigencia on contrato_suministro c  (cost=0.29..8.30 rows=1 width=40) (actual time=0.001..0.001 rows=1 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Buffers: shared hit=3
+Planning Time: 0.019 ms
+Execution Time: 0.010 ms
+Nested Loop Left Join  (cost=0.58..16.63 rows=1 width=47) (actual time=0.003..0.003 rows=1 loops=1)
+  Join Filter: (p.proveedor_id = c.proveedor_id)
+  Buffers: shared hit=5
+  ->  Index Scan using pk_proveedor on proveedor p  (cost=0.29..8.31 rows=1 width=15) (actual time=0.002..0.002 rows=1 loops=1)
+        Index Cond: (proveedor_id = 90001)
+        Buffers: shared hit=3
+  ->  Index Scan using idx_contrato_proveedor_vigencia on contrato_suministro c  (cost=0.29..8.30 rows=1 width=40) (actual time=0.001..0.001 rows=0 loops=1)
+        Index Cond: (proveedor_id = 90001)
+        Buffers: shared hit=2
+Planning Time: 0.018 ms
+Execution Time: 0.006 ms
+
+===== medir_q1.py mediana_r3
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q1_mediana_r3.csv (200 ejecuciones)
+RESULTADOS DE MEDICIÓN PARA Q1 (200 EJECUCIONES)
+Frío -> p50: 0.134 ms | p95: 0.159 ms | p99: 0.391 ms
+Caliente -> p50: 0.137 ms | p95: 0.154 ms | p99: 0.204 ms
+Nested Loop Left Join  (cost=0.58..16.63 rows=1 width=47) (actual time=0.003..0.004 rows=1 loops=1)
+  Join Filter: (p.proveedor_id = c.proveedor_id)
+  Buffers: shared hit=6
+  ->  Index Scan using pk_proveedor on proveedor p  (cost=0.29..8.31 rows=1 width=15) (actual time=0.002..0.002 rows=1 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Buffers: shared hit=3
+  ->  Index Scan using idx_contrato_proveedor_vigencia on contrato_suministro c  (cost=0.29..8.30 rows=1 width=40) (actual time=0.001..0.001 rows=1 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Buffers: shared hit=3
+Planning Time: 0.019 ms
+Execution Time: 0.007 ms
+Nested Loop Left Join  (cost=0.58..16.63 rows=1 width=47) (actual time=0.003..0.003 rows=1 loops=1)
+  Join Filter: (p.proveedor_id = c.proveedor_id)
+  Buffers: shared hit=5
+  ->  Index Scan using pk_proveedor on proveedor p  (cost=0.29..8.31 rows=1 width=15) (actual time=0.001..0.002 rows=1 loops=1)
+        Index Cond: (proveedor_id = 90001)
+        Buffers: shared hit=3
+  ->  Index Scan using idx_contrato_proveedor_vigencia on contrato_suministro c  (cost=0.29..8.30 rows=1 width=40) (actual time=0.001..0.001 rows=0 loops=1)
+        Index Cond: (proveedor_id = 90001)
+        Buffers: shared hit=2
+Planning Time: 0.017 ms
+Execution Time: 0.005 ms
+
+===== medir_q2.py mediana_r1
+==============================================
+PREPARANDO PARÁMETROS DESDE CSV (CERO CONSULTAS PREVIAS)
+==============================================
+Pool Caliente: 100 variaciones (Top Zipf).
+Pool Frío: 100 proveedores distintos (Cola Larga).
+Total de corridas a ejecutar: 200
+
+==============================================
+MEDICIÓN Q2 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q2_mediana_r1.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Zipf - 100 runs):
+  p50: 0.336 ms | p95: 0.764 ms | p99: 1.195 ms
+
+Escenario Frío (100 Proveedores Distintos Cola Larga - 100 runs):
+  p50: 0.232 ms | p95: 0.254 ms | p99: 0.269 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Index Scan using idx_catalogo_proveedor_sku_vigencia on catalogo_negociado c  (cost=0.42..92.76 rows=1 width=14) (actual time=0.009..0.033 rows=20 loops=1)
+  Index Cond: ((proveedor_id = 41) AND (sku_id = ANY ('{40115,40026,40760,40282,40251,40229,40143,40755,40105,40693,40759,40914,40559,40090,40605,40433,40033,40031,40096,40224}'::integer[])) AND (fecha_inicio <= '2026-09-16 15:00:00+00'::timestamp with time zone) AND (fecha_fin >= '2026-09-16 15:00:00+00'::timestamp with time zone))
+  Buffers: shared hit=69
+Planning Time: 0.023 ms
+Execution Time: 0.036 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Index Scan using idx_catalogo_proveedor_sku_vigencia on catalogo_negociado c  (cost=0.42..92.76 rows=1 width=14) (actual time=0.004..0.013 rows=20 loops=1)
+  Index Cond: ((proveedor_id = 36516) AND (sku_id = ANY ('{248738,248744,248749,248756,248765,248737,248743,248746,248759,248741,248745,248758,248747,248740,248760,248764,248748,248757,248739,248753}'::integer[])) AND (fecha_inicio <= '2026-09-16 15:00:00+00'::timestamp with time zone) AND (fecha_fin >= '2026-09-16 15:00:00+00'::timestamp with time zone))
+  Buffers: shared hit=61
+Planning Time: 0.019 ms
+Execution Time: 0.016 ms
+
+===== medir_q2.py mediana_r2
+==============================================
+PREPARANDO PARÁMETROS DESDE CSV (CERO CONSULTAS PREVIAS)
+==============================================
+Pool Caliente: 100 variaciones (Top Zipf).
+Pool Frío: 100 proveedores distintos (Cola Larga).
+Total de corridas a ejecutar: 200
+
+==============================================
+MEDICIÓN Q2 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q2_mediana_r2.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Zipf - 100 runs):
+  p50: 0.221 ms | p95: 0.517 ms | p99: 0.801 ms
+
+Escenario Frío (100 Proveedores Distintos Cola Larga - 100 runs):
+  p50: 0.180 ms | p95: 0.285 ms | p99: 0.416 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Index Scan using idx_catalogo_proveedor_sku_vigencia on catalogo_negociado c  (cost=0.42..92.76 rows=1 width=14) (actual time=0.006..0.028 rows=20 loops=1)
+  Index Cond: ((proveedor_id = 41) AND (sku_id = ANY ('{40115,40026,40760,40282,40251,40229,40143,40755,40105,40693,40759,40914,40559,40090,40605,40433,40033,40031,40096,40224}'::integer[])) AND (fecha_inicio <= '2026-09-16 15:00:00+00'::timestamp with time zone) AND (fecha_fin >= '2026-09-16 15:00:00+00'::timestamp with time zone))
+  Buffers: shared hit=69
+Planning Time: 0.023 ms
+Execution Time: 0.031 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Index Scan using idx_catalogo_proveedor_sku_vigencia on catalogo_negociado c  (cost=0.42..92.76 rows=1 width=14) (actual time=0.004..0.013 rows=20 loops=1)
+  Index Cond: ((proveedor_id = 36516) AND (sku_id = ANY ('{248738,248744,248749,248756,248765,248737,248743,248746,248759,248741,248745,248758,248747,248740,248760,248764,248748,248757,248739,248753}'::integer[])) AND (fecha_inicio <= '2026-09-16 15:00:00+00'::timestamp with time zone) AND (fecha_fin >= '2026-09-16 15:00:00+00'::timestamp with time zone))
+  Buffers: shared hit=61
+Planning Time: 0.015 ms
+Execution Time: 0.014 ms
+
+===== medir_q2.py mediana_r3
+==============================================
+PREPARANDO PARÁMETROS DESDE CSV (CERO CONSULTAS PREVIAS)
+==============================================
+Pool Caliente: 100 variaciones (Top Zipf).
+Pool Frío: 100 proveedores distintos (Cola Larga).
+Total de corridas a ejecutar: 200
+
+==============================================
+MEDICIÓN Q2 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q2_mediana_r3.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Zipf - 100 runs):
+  p50: 0.240 ms | p95: 0.437 ms | p99: 0.473 ms
+
+Escenario Frío (100 Proveedores Distintos Cola Larga - 100 runs):
+  p50: 0.163 ms | p95: 0.193 ms | p99: 0.212 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Index Scan using idx_catalogo_proveedor_sku_vigencia on catalogo_negociado c  (cost=0.42..92.76 rows=1 width=14) (actual time=0.005..0.030 rows=20 loops=1)
+  Index Cond: ((proveedor_id = 41) AND (sku_id = ANY ('{40115,40026,40760,40282,40251,40229,40143,40755,40105,40693,40759,40914,40559,40090,40605,40433,40033,40031,40096,40224}'::integer[])) AND (fecha_inicio <= '2026-09-16 15:00:00+00'::timestamp with time zone) AND (fecha_fin >= '2026-09-16 15:00:00+00'::timestamp with time zone))
+  Buffers: shared hit=69
+Planning Time: 0.025 ms
+Execution Time: 0.033 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Index Scan using idx_catalogo_proveedor_sku_vigencia on catalogo_negociado c  (cost=0.42..92.76 rows=1 width=14) (actual time=0.003..0.012 rows=20 loops=1)
+  Index Cond: ((proveedor_id = 36516) AND (sku_id = ANY ('{248738,248744,248749,248756,248765,248737,248743,248746,248759,248741,248745,248758,248747,248740,248760,248764,248748,248757,248739,248753}'::integer[])) AND (fecha_inicio <= '2026-09-16 15:00:00+00'::timestamp with time zone) AND (fecha_fin >= '2026-09-16 15:00:00+00'::timestamp with time zone))
+  Buffers: shared hit=61
+Planning Time: 0.015 ms
+Execution Time: 0.013 ms
+
+===== medir_q3.py mediana_r1
+==============================================
+PREPARANDO PARÁMETROS DE EVALUACIÓN PARA Q3
+==============================================
+Pool Caliente: 100 variaciones (Picos de Fin de Mes).
+Pool Frío: 100 variaciones (Días Valle - Mitad de Mes).
+Total de corridas a ejecutar: 200
+
+==============================================
+MEDICIÓN Q3 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q3_mediana_r1.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Últimos 3 Días Hábiles del Mes - 100 runs):
+  p50: 0.178 ms | p95: 0.220 ms | p99: 0.504 ms
+
+Escenario Frío (Días Valle / Mitad de Mes - 100 runs):
+  p50: 0.171 ms | p95: 0.222 ms | p99: 0.387 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente - Fin de Mes)
+==============================================
+Bitmap Heap Scan on franja_descargue f  (cost=4.62..119.01 rows=32 width=28) (actual time=0.004..0.007 rows=32 loops=1)
+  Recheck Cond: ((cedi_id = 1) AND (fecha = '2026-09-16'::date) AND ((estado)::text = 'DISPONIBLE'::text))
+  Heap Blocks: exact=2
+  Buffers: shared hit=4
+  ->  Bitmap Index Scan on idx_franja_cedi_fecha_estado  (cost=0.00..4.61 rows=32 width=0) (actual time=0.002..0.002 rows=32 loops=1)
+        Index Cond: ((cedi_id = 1) AND (fecha = '2026-09-16'::date))
+        Buffers: shared hit=2
+Planning Time: 0.015 ms
+Execution Time: 0.012 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío - Mitad de Mes)
+==============================================
+Bitmap Heap Scan on franja_descargue f  (cost=4.62..119.01 rows=32 width=28) (actual time=0.007..0.009 rows=35 loops=1)
+  Recheck Cond: ((cedi_id = 5) AND (fecha = '2025-08-14'::date) AND ((estado)::text = 'DISPONIBLE'::text))
+  Heap Blocks: exact=1
+  Buffers: shared hit=3
+  ->  Bitmap Index Scan on idx_franja_cedi_fecha_estado  (cost=0.00..4.61 rows=32 width=0) (actual time=0.002..0.002 rows=35 loops=1)
+        Index Cond: ((cedi_id = 5) AND (fecha = '2025-08-14'::date))
+        Buffers: shared hit=2
+Planning Time: 0.009 ms
+Execution Time: 0.012 ms
+
+===== medir_q3.py mediana_r2
+==============================================
+PREPARANDO PARÁMETROS DE EVALUACIÓN PARA Q3
+==============================================
+Pool Caliente: 100 variaciones (Picos de Fin de Mes).
+Pool Frío: 100 variaciones (Días Valle - Mitad de Mes).
+Total de corridas a ejecutar: 200
+
+==============================================
+MEDICIÓN Q3 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q3_mediana_r2.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Últimos 3 Días Hábiles del Mes - 100 runs):
+  p50: 0.144 ms | p95: 0.174 ms | p99: 0.241 ms
+
+Escenario Frío (Días Valle / Mitad de Mes - 100 runs):
+  p50: 0.159 ms | p95: 0.497 ms | p99: 0.656 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente - Fin de Mes)
+==============================================
+Bitmap Heap Scan on franja_descargue f  (cost=4.62..119.01 rows=32 width=28) (actual time=0.008..0.013 rows=32 loops=1)
+  Recheck Cond: ((cedi_id = 1) AND (fecha = '2026-09-16'::date) AND ((estado)::text = 'DISPONIBLE'::text))
+  Heap Blocks: exact=2
+  Buffers: shared hit=4
+  ->  Bitmap Index Scan on idx_franja_cedi_fecha_estado  (cost=0.00..4.61 rows=32 width=0) (actual time=0.005..0.005 rows=32 loops=1)
+        Index Cond: ((cedi_id = 1) AND (fecha = '2026-09-16'::date))
+        Buffers: shared hit=2
+Planning Time: 0.028 ms
+Execution Time: 0.019 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío - Mitad de Mes)
+==============================================
+Bitmap Heap Scan on franja_descargue f  (cost=4.62..119.01 rows=32 width=28) (actual time=0.006..0.008 rows=35 loops=1)
+  Recheck Cond: ((cedi_id = 5) AND (fecha = '2025-08-14'::date) AND ((estado)::text = 'DISPONIBLE'::text))
+  Heap Blocks: exact=1
+  Buffers: shared hit=3
+  ->  Bitmap Index Scan on idx_franja_cedi_fecha_estado  (cost=0.00..4.61 rows=32 width=0) (actual time=0.004..0.004 rows=35 loops=1)
+        Index Cond: ((cedi_id = 5) AND (fecha = '2025-08-14'::date))
+        Buffers: shared hit=2
+Planning Time: 0.019 ms
+Execution Time: 0.015 ms
+
+===== medir_q3.py mediana_r3
+==============================================
+PREPARANDO PARÁMETROS DE EVALUACIÓN PARA Q3
+==============================================
+Pool Caliente: 100 variaciones (Picos de Fin de Mes).
+Pool Frío: 100 variaciones (Días Valle - Mitad de Mes).
+Total de corridas a ejecutar: 200
+
+==============================================
+MEDICIÓN Q3 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q3_mediana_r3.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Últimos 3 Días Hábiles del Mes - 100 runs):
+  p50: 0.220 ms | p95: 0.858 ms | p99: 1.142 ms
+
+Escenario Frío (Días Valle / Mitad de Mes - 100 runs):
+  p50: 0.258 ms | p95: 0.727 ms | p99: 1.373 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente - Fin de Mes)
+==============================================
+Bitmap Heap Scan on franja_descargue f  (cost=4.62..119.01 rows=32 width=28) (actual time=0.007..0.011 rows=32 loops=1)
+  Recheck Cond: ((cedi_id = 1) AND (fecha = '2026-09-16'::date) AND ((estado)::text = 'DISPONIBLE'::text))
+  Heap Blocks: exact=2
+  Buffers: shared hit=4
+  ->  Bitmap Index Scan on idx_franja_cedi_fecha_estado  (cost=0.00..4.61 rows=32 width=0) (actual time=0.005..0.005 rows=32 loops=1)
+        Index Cond: ((cedi_id = 1) AND (fecha = '2026-09-16'::date))
+        Buffers: shared hit=2
+Planning Time: 0.040 ms
+Execution Time: 0.018 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío - Mitad de Mes)
+==============================================
+Bitmap Heap Scan on franja_descargue f  (cost=4.62..119.01 rows=32 width=28) (actual time=0.011..0.014 rows=35 loops=1)
+  Recheck Cond: ((cedi_id = 5) AND (fecha = '2025-08-14'::date) AND ((estado)::text = 'DISPONIBLE'::text))
+  Heap Blocks: exact=1
+  Buffers: shared hit=3
+  ->  Bitmap Index Scan on idx_franja_cedi_fecha_estado  (cost=0.00..4.61 rows=32 width=0) (actual time=0.006..0.007 rows=35 loops=1)
+        Index Cond: ((cedi_id = 5) AND (fecha = '2025-08-14'::date))
+        Buffers: shared hit=2
+Planning Time: 0.034 ms
+Execution Time: 0.023 ms
+
+===== medir_q4.py mediana_r1
+==============================================
+SELECCIONANDO PARÁMETROS (HOT Y COLD) PARA Q4
+==============================================
+Pool Caliente: 50 proveedores (Top).
+Pool Frío: 50 proveedores (Cola Larga).
+
+==============================================
+MEDICIÓN Q4 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q4_mediana_r1.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Proveedores - 100 runs):
+  p50: 2.977 ms | p95: 14.135 ms | p99: 31.294 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.317 ms | p95: 0.386 ms | p99: 0.414 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Sort  (cost=23049.74..23056.71 rows=2789 width=125) (actual time=15.451..15.506 rows=24 loops=1)
+  Sort Key: (((date_trunc('month'::text, o.fecha_creacion)))::date) DESC, l.categoria
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=23170 read=772
+  ->  HashAggregate  (cost=22771.60..22890.13 rows=2789 width=125) (actual time=15.427..15.500 rows=24 loops=1)
+        Group Key: ((date_trunc('month'::text, o.fecha_creacion)))::date, l.categoria, o.proveedor_id
+        Batches: 1  Memory Usage: 121kB
+        Buffers: shared hit=23170 read=772
+        ->  Finalize HashAggregate  (cost=21168.15..21865.30 rows=27886 width=77) (actual time=13.675..14.886 rows=6570 loops=1)
+              Group Key: l.categoria, (date_trunc('month'::text, o.fecha_creacion)), o.orden_id
+              Batches: 1  Memory Usage: 2321kB
+              Buffers: shared hit=23170 read=772
+              ->  Gather  (cost=18350.54..20819.58 rows=23238 width=74) (actual time=11.494..12.126 rows=6570 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=23170 read=772
+                    ->  Partial HashAggregate  (cost=17350.54..17495.78 rows=11619 width=74) (actual time=10.257..10.516 rows=2190 loops=3)
+                          Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+                          Batches: 1  Memory Usage: 1169kB
+                          Buffers: shared hit=23170 read=772
+                          Worker 0:  Batches: 1  Memory Usage: 913kB
+                          Worker 1:  Batches: 1  Memory Usage: 913kB
+                          ->  Nested Loop  (cost=221.91..17147.21 rows=11619 width=65) (actual time=0.319..8.784 rows=8931 loops=3)
+                                Buffers: shared hit=23170 read=772
+                                ->  Parallel Bitmap Heap Scan on orden_compra o  (cost=221.49..6564.05 rows=2853 width=40) (actual time=0.305..2.600 rows=2190 loops=3)
+                                      Recheck Cond: ((proveedor_id = 69445) AND ((estado)::text = 'CONFIRMADA'::text))
+                                      Heap Blocks: exact=1717
+                                      Buffers: shared hit=3975 read=120
+                                      ->  Bitmap Index Scan on idx_orden_proveedor_confirmada  (cost=0.00..219.78 rows=6847 width=0) (actual time=0.609..0.609 rows=6570 loops=1)
+                                            Index Cond: (proveedor_id = 69445)
+                                            Buffers: shared hit=2 read=40
+                                ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..3.63 rows=7 width=25) (actual time=0.002..0.002 rows=4 loops=6570)
+                                      Index Cond: (orden_id = o.orden_id)
+                                      Heap Fetches: 0
+                                      Buffers: shared hit=19195 read=652
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.099 ms
+Execution Time: 15.671 ms
+
+===== medir_q4.py mediana_r2
+==============================================
+SELECCIONANDO PARÁMETROS (HOT Y COLD) PARA Q4
+==============================================
+Pool Caliente: 50 proveedores (Top).
+Pool Frío: 50 proveedores (Cola Larga).
+
+==============================================
+MEDICIÓN Q4 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q4_mediana_r2.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Proveedores - 100 runs):
+  p50: 2.545 ms | p95: 8.540 ms | p99: 13.568 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.575 ms | p95: 2.260 ms | p99: 2.708 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Sort  (cost=23049.74..23056.71 rows=2789 width=125) (actual time=47.542..47.604 rows=24 loops=1)
+  Sort Key: (((date_trunc('month'::text, o.fecha_creacion)))::date) DESC, l.categoria
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=23044 read=898
+  ->  HashAggregate  (cost=22771.60..22890.13 rows=2789 width=125) (actual time=47.515..47.596 rows=24 loops=1)
+        Group Key: ((date_trunc('month'::text, o.fecha_creacion)))::date, l.categoria, o.proveedor_id
+        Batches: 1  Memory Usage: 121kB
+        Buffers: shared hit=23044 read=898
+        ->  Finalize HashAggregate  (cost=21168.15..21865.30 rows=27886 width=77) (actual time=45.653..46.964 rows=6570 loops=1)
+              Group Key: l.categoria, (date_trunc('month'::text, o.fecha_creacion)), o.orden_id
+              Batches: 1  Memory Usage: 2321kB
+              Buffers: shared hit=23044 read=898
+              ->  Gather  (cost=18350.54..20819.58 rows=23238 width=74) (actual time=43.671..44.327 rows=6570 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=23044 read=898
+                    ->  Partial HashAggregate  (cost=17350.54..17495.78 rows=11619 width=74) (actual time=38.284..38.550 rows=2190 loops=3)
+                          Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+                          Batches: 1  Memory Usage: 1169kB
+                          Buffers: shared hit=23044 read=898
+                          Worker 0:  Batches: 1  Memory Usage: 913kB
+                          Worker 1:  Batches: 1  Memory Usage: 913kB
+                          ->  Nested Loop  (cost=221.91..17147.21 rows=11619 width=65) (actual time=1.293..34.106 rows=8931 loops=3)
+                                Buffers: shared hit=23044 read=898
+                                ->  Parallel Bitmap Heap Scan on orden_compra o  (cost=221.49..6564.05 rows=2853 width=40) (actual time=1.239..12.550 rows=2190 loops=3)
+                                      Recheck Cond: ((proveedor_id = 69445) AND ((estado)::text = 'CONFIRMADA'::text))
+                                      Heap Blocks: exact=1813
+                                      Buffers: shared hit=3957 read=138
+                                      ->  Bitmap Index Scan on idx_orden_proveedor_confirmada  (cost=0.00..219.78 rows=6847 width=0) (actual time=3.128..3.128 rows=6570 loops=1)
+                                            Index Cond: (proveedor_id = 69445)
+                                            Buffers: shared hit=2 read=40
+                                ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..3.63 rows=7 width=25) (actual time=0.008..0.008 rows=4 loops=6570)
+                                      Index Cond: (orden_id = o.orden_id)
+                                      Heap Fetches: 0
+                                      Buffers: shared hit=19087 read=760
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.345 ms
+Execution Time: 48.004 ms
+
+===== medir_q4.py mediana_r3
+==============================================
+SELECCIONANDO PARÁMETROS (HOT Y COLD) PARA Q4
+==============================================
+Pool Caliente: 50 proveedores (Top).
+Pool Frío: 50 proveedores (Cola Larga).
+
+==============================================
+MEDICIÓN Q4 CON PARÁMETROS VARIADOS (200 RUNS)
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q4_mediana_r3.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Top Proveedores - 100 runs):
+  p50: 2.428 ms | p95: 8.201 ms | p99: 12.789 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.356 ms | p95: 0.417 ms | p99: 0.430 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Sort  (cost=23049.74..23056.71 rows=2789 width=125) (actual time=15.174..15.225 rows=24 loops=1)
+  Sort Key: (((date_trunc('month'::text, o.fecha_creacion)))::date) DESC, l.categoria
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=23048 read=894
+  ->  HashAggregate  (cost=22771.60..22890.13 rows=2789 width=125) (actual time=15.150..15.220 rows=24 loops=1)
+        Group Key: ((date_trunc('month'::text, o.fecha_creacion)))::date, l.categoria, o.proveedor_id
+        Batches: 1  Memory Usage: 121kB
+        Buffers: shared hit=23048 read=894
+        ->  Finalize HashAggregate  (cost=21168.15..21865.30 rows=27886 width=77) (actual time=13.442..14.626 rows=6570 loops=1)
+              Group Key: l.categoria, (date_trunc('month'::text, o.fecha_creacion)), o.orden_id
+              Batches: 1  Memory Usage: 2321kB
+              Buffers: shared hit=23048 read=894
+              ->  Gather  (cost=18350.54..20819.58 rows=23238 width=74) (actual time=11.863..12.428 rows=6570 loops=1)
+                    Workers Planned: 2
+                    Workers Launched: 2
+                    Buffers: shared hit=23048 read=894
+                    ->  Partial HashAggregate  (cost=17350.54..17495.78 rows=11619 width=74) (actual time=10.765..11.003 rows=2190 loops=3)
+                          Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+                          Batches: 1  Memory Usage: 1169kB
+                          Buffers: shared hit=23048 read=894
+                          Worker 0:  Batches: 1  Memory Usage: 913kB
+                          Worker 1:  Batches: 1  Memory Usage: 913kB
+                          ->  Nested Loop  (cost=221.91..17147.21 rows=11619 width=65) (actual time=0.294..9.334 rows=8931 loops=3)
+                                Buffers: shared hit=23048 read=894
+                                ->  Parallel Bitmap Heap Scan on orden_compra o  (cost=221.49..6564.05 rows=2853 width=40) (actual time=0.281..2.413 rows=2190 loops=3)
+                                      Recheck Cond: ((proveedor_id = 69445) AND ((estado)::text = 'CONFIRMADA'::text))
+                                      Heap Blocks: exact=1720
+                                      Buffers: shared hit=3959 read=136
+                                      ->  Bitmap Index Scan on idx_orden_proveedor_confirmada  (cost=0.00..219.78 rows=6847 width=0) (actual time=0.553..0.553 rows=6570 loops=1)
+                                            Index Cond: (proveedor_id = 69445)
+                                            Buffers: shared hit=2 read=40
+                                ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..3.63 rows=7 width=25) (actual time=0.002..0.003 rows=4 loops=6570)
+                                      Index Cond: (orden_id = o.orden_id)
+                                      Heap Fetches: 0
+                                      Buffers: shared hit=19089 read=758
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.072 ms
+Execution Time: 15.322 ms
+
+===== medir_q5.py mediana_r1
+==============================================
+SELECCIONANDO PROVEEDORES Y MIDIENDO Q5 BASE
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q5_mediana_r1.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Proveedor Hot - 100 runs):
+  p50: 0.281 ms | p95: 0.400 ms | p99: 0.420 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.149 ms | p95: 0.190 ms | p99: 0.202 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Limit  (cost=0.42..3.18 rows=50 width=51) (actual time=0.008..0.013 rows=50 loops=1)
+  Buffers: shared hit=5
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..539.05 rows=9750 width=51) (actual time=0.008..0.011 rows=50 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Heap Fetches: 0
+        Buffers: shared hit=5
+Planning Time: 0.010 ms
+Execution Time: 0.018 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Limit  (cost=0.42..5.12 rows=40 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..5.12 rows=40 width=51) (actual time=0.002..0.002 rows=15 loops=1)
+        Index Cond: (proveedor_id = 3)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.008 ms
+Execution Time: 0.005 ms
+
+===== medir_q5.py mediana_r2
+==============================================
+SELECCIONANDO PROVEEDORES Y MIDIENDO Q5 BASE
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q5_mediana_r2.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Proveedor Hot - 100 runs):
+  p50: 0.237 ms | p95: 0.323 ms | p99: 0.335 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.130 ms | p95: 0.160 ms | p99: 0.164 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Limit  (cost=0.42..3.18 rows=50 width=51) (actual time=0.004..0.010 rows=50 loops=1)
+  Buffers: shared hit=5
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..539.05 rows=9750 width=51) (actual time=0.004..0.008 rows=50 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Heap Fetches: 0
+        Buffers: shared hit=5
+Planning Time: 0.012 ms
+Execution Time: 0.014 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Limit  (cost=0.42..5.12 rows=40 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..5.12 rows=40 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+        Index Cond: (proveedor_id = 3)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.008 ms
+Execution Time: 0.006 ms
+
+===== medir_q5.py mediana_r3
+==============================================
+SELECCIONANDO PROVEEDORES Y MIDIENDO Q5 BASE
+==============================================
+Evidencia cruda: /Users/david/ProyectoASE/evidencia/linea_base/20261017T044939Z/q5_mediana_r3.csv (200 ejecuciones)
+
+--- RESULTADOS MEDICIÓN ---
+Escenario Caliente (Proveedor Hot - 100 runs):
+  p50: 0.178 ms | p95: 0.229 ms | p99: 0.244 ms
+
+Escenario Frío (Cola Larga - 100 runs):
+  p50: 0.123 ms | p95: 0.146 ms | p99: 0.158 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Caliente)
+==============================================
+Limit  (cost=0.42..3.18 rows=50 width=51) (actual time=0.002..0.008 rows=50 loops=1)
+  Buffers: shared hit=5
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..539.05 rows=9750 width=51) (actual time=0.002..0.006 rows=50 loops=1)
+        Index Cond: (proveedor_id = 69445)
+        Heap Fetches: 0
+        Buffers: shared hit=5
+Planning Time: 0.010 ms
+Execution Time: 0.012 ms
+
+==============================================
+EXPLAIN ANALYZE (Muestra Escenario Frío)
+==============================================
+Limit  (cost=0.42..5.12 rows=40 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..5.12 rows=40 width=51) (actual time=0.002..0.003 rows=15 loops=1)
+        Index Cond: (proveedor_id = 3)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.011 ms
+Execution Time: 0.006 ms
+

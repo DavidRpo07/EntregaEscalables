@@ -1,0 +1,74 @@
+===== Q4 caliente parámetros=(93898,)
+Sort  (cost=3894.94..3895.53 rows=238 width=124) (actual time=1.120..1.120 rows=24 loops=1)
+  Sort Key: (((date_trunc('month'::text, o.fecha_creacion)))::date) DESC, l.categoria
+  Sort Method: quicksort  Memory: 27kB
+  Buffers: shared hit=1516
+  ->  HashAggregate  (cost=3875.43..3885.54 rows=238 width=124) (actual time=1.105..1.117 rows=24 loops=1)
+        Group Key: ((date_trunc('month'::text, o.fecha_creacion)))::date, l.categoria, o.proveedor_id
+        Batches: 1  Memory Usage: 37kB
+        Buffers: shared hit=1516
+        ->  HashAggregate  (cost=3738.75..3798.17 rows=2377 width=76) (actual time=0.977..1.060 rows=497 loops=1)
+              Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+              Batches: 1  Memory Usage: 241kB
+              Buffers: shared hit=1516
+              ->  Nested Loop  (cost=0.85..3697.15 rows=2377 width=64) (actual time=0.005..0.767 rows=2071 loops=1)
+                    Buffers: shared hit=1516
+                    ->  Index Scan using idx_orden_proveedor_confirmada on orden_compra o  (cost=0.42..1014.65 rows=588 width=40) (actual time=0.003..0.031 rows=497 loops=1)
+                          Index Cond: (proveedor_id = 93898)
+                          Buffers: shared hit=15
+                    ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..4.48 rows=7 width=24) (actual time=0.001..0.001 rows=4 loops=497)
+                          Index Cond: (orden_id = o.orden_id)
+                          Heap Fetches: 0
+                          Buffers: shared hit=1501
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.066 ms
+Execution Time: 1.132 ms
+
+===== Q4 frio parámetros=(169,)
+GroupAggregate  (cost=199.59..207.22 rows=113 width=124) (actual time=0.023..0.027 rows=6 loops=1)
+  Group Key: detalle_orden_categoria.mes, detalle_orden_categoria.categoria, detalle_orden_categoria.proveedor_id
+  Buffers: shared hit=23
+  ->  Sort  (cost=199.59..199.87 rows=113 width=52) (actual time=0.020..0.021 rows=6 loops=1)
+        Sort Key: detalle_orden_categoria.mes DESC, detalle_orden_categoria.categoria, detalle_orden_categoria.proveedor_id
+        Sort Method: quicksort  Memory: 25kB
+        Buffers: shared hit=23
+        ->  Subquery Scan on detalle_orden_categoria  (cost=191.78..195.74 rows=113 width=52) (actual time=0.017..0.019 rows=6 loops=1)
+              Buffers: shared hit=23
+              ->  HashAggregate  (cost=191.78..194.61 rows=113 width=76) (actual time=0.017..0.018 rows=6 loops=1)
+                    Group Key: l.categoria, date_trunc('month'::text, o.fecha_creacion), o.orden_id
+                    Batches: 1  Memory Usage: 24kB
+                    Buffers: shared hit=23
+                    ->  Nested Loop  (cost=0.85..189.81 rows=113 width=64) (actual time=0.003..0.013 rows=33 loops=1)
+                          Buffers: shared hit=23
+                          ->  Index Scan using idx_orden_proveedor_confirmada on orden_compra o  (cost=0.42..56.16 rows=28 width=40) (actual time=0.002..0.002 rows=6 loops=1)
+                                Index Cond: (proveedor_id = 169)
+                                Buffers: shared hit=4
+                          ->  Index Only Scan using idx_linea_orden_id on linea_orden l  (cost=0.43..4.69 rows=7 width=24) (actual time=0.001..0.001 rows=6 loops=6)
+                                Index Cond: (orden_id = o.orden_id)
+                                Heap Fetches: 0
+                                Buffers: shared hit=19
+Planning:
+  Buffers: shared hit=19
+Planning Time: 0.063 ms
+Execution Time: 0.037 ms
+
+===== Q5 caliente parámetros=(12205, 0)
+Limit  (cost=0.42..3.28 rows=50 width=51) (actual time=0.003..0.007 rows=50 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..40.80 rows=707 width=51) (actual time=0.003..0.005 rows=50 loops=1)
+        Index Cond: (proveedor_id = 12205)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.009 ms
+Execution Time: 0.010 ms
+
+===== Q5 frio parámetros=(334, 0)
+Limit  (cost=0.42..5.12 rows=40 width=51) (actual time=0.001..0.002 rows=16 loops=1)
+  Buffers: shared hit=4
+  ->  Index Only Scan using idx_orden_proveedor_fecha on orden_compra o  (cost=0.42..5.12 rows=40 width=51) (actual time=0.001..0.002 rows=16 loops=1)
+        Index Cond: (proveedor_id = 334)
+        Heap Fetches: 0
+        Buffers: shared hit=4
+Planning Time: 0.007 ms
+Execution Time: 0.004 ms

@@ -63,13 +63,13 @@ de percentil de cada uno): `lab/momento1/referencia_e2.yaml`.
 
 ```bash
 make linea-base                   # baja el lab, recarga la base, Q1–Q5 frío/caliente y Fase 4 (5.000 órdenes)
-make linea-base MEDIANA_Q1_Q3=on  # estado final: además Q1–Q3 tres veces (mediana)
+make linea-base MEDIANA_Q1_Q3=on MEDIANA_Q4_Q5=on  # estado final: Q1–Q5 tres veces más (mediana)
 venv/bin/python lab/momento1/linea_base.py comparar evidencia/linea_base/<BASE> evidencia/linea_base/<FINAL>
 ```
 
 Evidencia: `evidencia/linea_base/<UTC>/` (`tabla.md`: E2 vs. E3 vs. objetivo 0,90 × E2; CSV crudos,
 EXPLAIN en `consultas.log`, `manifest.json`). Línea base E3: `20261017T034200Z`; estado final:
-`20261017T035415Z` con `tabla_final.md`. Optimizaciones (un commit cada una) y su aporte por paso:
+`20261017T044939Z` con `tabla_final.md` (`MEDIANA_Q1_Q3=on MEDIANA_Q4_Q5=on`). Optimizaciones (un commit cada una) y su aporte por paso:
 `evidencia/optimizaciones/README.md`.
 
 ### 3. Laboratorio de fallas
