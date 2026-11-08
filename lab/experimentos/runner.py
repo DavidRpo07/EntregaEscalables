@@ -637,7 +637,8 @@ def resumen_md(run, exp, marcas, por_fase, rec, slo, pred, inyecciones, trazas, 
     lineas = [
         f"# Resultado {run}", "",
         f"- Experimento: **{exp['definicion']['id']}** — {exp['definicion']['descripcion']}",
-        (f"- Configuración de la falla: `{json.dumps({k: v for k, v in exp['falla'].items() if k not in ('descripcion',)}, ensure_ascii=False)}`"
+        ("\n".join(f"- Configuración de la falla {f['id']}: `{json.dumps({k: v for k, v in f.items() if k not in ('descripcion',)}, ensure_ascii=False)}`"
+                   for f in (exp["falla"] if isinstance(exp["falla"], list) else [exp["falla"]]))
          if exp["falla"] else "- Sin falla: las tres fases son la misma carga (los nombres de fase quedan solo como marcas de tiempo)"),
         f"- Correcciones: " + (", ".join(f"**{c}** `{json.dumps({k: v for k, v in corr['config'][c].items() if k != 'activa'}, ensure_ascii=False)}`"
                                          for c in corr["activas"]) if corr and corr["activas"] else "ninguna (sistema sin corregir)"),
