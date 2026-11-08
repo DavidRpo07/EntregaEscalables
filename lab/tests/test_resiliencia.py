@@ -141,8 +141,9 @@ class TestCorrecciones(unittest.TestCase):
         self.assertEqual(datos["bulkhead"]["pool_timeout_ms"], 500)
         self.assertEqual(datos["bulkhead"]["lock_timeout_ms"], 1000)
         self.assertEqual(datos["worker"]["max_intentos"], 3)
+        self.assertEqual(datos["worker"]["concurrencia"], 25)
         self.assertEqual(datos["experimentos"], {"A1": ["catalogo"], "A2": ["bulkhead"], "B1": ["bulkhead"],
-                                                 "B2": ["bulkhead"], "D2": ["worker"]})
+                                                 "B2": ["bulkhead"], "D2": ["worker"], "X1": ["bulkhead", "worker"]})
 
     def test_sin_archivo_todo_apagado(self):
         c = Correcciones(self.ruta, intervalo_recarga_s=0)

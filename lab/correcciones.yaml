@@ -21,6 +21,7 @@ bulkhead:              # A2, B1, B2: pools separados + fail-fast + lock_timeout
 worker:                # D2: retry con backoff + jitter, mensajes muertos y circuit breaker hacia ext-sap
   activa: false
   max_intentos: 3      # al 3.er fallo el evento pasa a ordenes.outbox_muerto
+  concurrencia: 25     # v2: llamadas a ext-sap en paralelo por lote (1 = en serie, la versión de X1-corr_20261108T223627Z)
   backoff: {base_ms: 100, factor: 2, jitter: 0.5}   # ~100, ~200 ms (+ hasta 50 %), sin bloquear el lote
   breaker: {fallos_para_abrir: 5, semiabierto_tras_s: 30}
 
