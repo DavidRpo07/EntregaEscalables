@@ -1,19 +1,22 @@
 # Criterio 4 — Corrección, re-experimentación y estado final (30 pts)
 
-## Diapositiva 1 — X1 antes y después de corregir (medido)
+## Diapositiva 1 — X1: de atacar el síntoma a atacar la capacidad (medido)
 
-Detalle: `evidencia/results/X1-corr_20261108T223627Z/analisis.md`.
+Detalle: `evidencia/results/X1-corr-worker-paralelo-v2_20261108T231125Z/analisis.md`.
 
-| Fase de falla | Sin corrección | Con corrección |
-|---|---|---|
-| POST p99 | 25.721 ms | **1.116 ms** |
-| Errores | 24,8 % | **7,9 %** |
-| Lecturas p95 | ~9.700 ms | **~7 ms** |
-| Lag outbox | 297 s | 294 s (sin mejora) |
-| Pendientes | 3.095 | 3.900 (**empeora**) |
+| Fase de falla | Sin corrección | Corrección 1 (en serie) | Corrección 2 (paralelo + breaker) |
+|---|---|---|---|
+| POST p99 | 25.721 ms | 1.116 ms | **1.118 ms** |
+| Errores | 24,8 % | 7,9 % | **7,8 %** |
+| Lecturas p95 | ~9.700 ms | ~7 ms | **~8 ms** |
+| Lag máximo del outbox | 297 s | 294 s | **133 s** |
+| Pendientes máximos | 3.095 | 3.900 | **1.608** |
+| Recuperación del sistema | no | no | **9,8 s (cumple SLO)** |
 
-Para decir: **"La corrección de B2 funciona. La de D2 resuelve el bloqueo de la cola, pero no la capacidad.
-Y al arreglar la API entran más órdenes, que van a un consumidor que sigue lento: una corrección le pasó la carga al otro camino."**
+Para decir: **"La primera corrección arregló la API y el bloqueo de la cola, pero no el outbox: atacamos el síntoma.
+Medimos de nuevo, encontramos que el límite era la capacidad del worker en serie y un breaker que se abría con SAP vivo.
+Con llamadas en paralelo y el breaker calibrado, el lag bajó 55 % y el sistema se recupera en 10 s.
+Todavía no cumple el SLO durante la falla: cada mensaje rechazado cuesta 6 s de espera."**
 
 ## Diapositiva 2 — Las correcciones y su justificación
 
@@ -24,7 +27,8 @@ Y al arreglar la API entran más órdenes, que van a un consumidor que sigue len
 | B1 | Bulkhead + fail-fast del pool (500 ms) | Mejor fallar en 0,5 s que colgarse 60 s | Sí: p99 60 s → 2,6 s |
 | B2 | Bulkhead + `lock_timeout` 1 s | Que falle solo quien choca con el lock | **Sí: p99 25,7 s → 1,1 s** |
 | D2 | Retry + backoff + DLQ + breaker | Un mensaje malo no debe bloquear la cola | Bloqueo sí; lag no |
-| **X1** | **Bulkhead + worker** | **Las correcciones de cada falla, juntas** | **API sí; outbox no** |
+| **X1 (v1)** | **Bulkhead + worker en serie** | **Las correcciones de cada falla, juntas** | **API sí; outbox no** |
+| **X1 (v2)** | **+ llamadas a SAP en paralelo + breaker a 20 fallos** | **El límite era la capacidad, no los reintentos** | **API sí; outbox −55 % de lag, recuperación 9,8 s** |
 
 ## Diapositiva 3 — Tabla E2 vs. E3 (latencia)
 
@@ -67,7 +71,8 @@ Control: Q4 y Q5 *antes del índice* (mismo SQL que el E2) dieron 0,66–1,43 ×
 
 ## Diapositiva 6 — Lo que no alcanzó o quedó pendiente
 
-- **El lag de D2 no mejora** (ni sola ni en X1): falta paralelizar el worker o publicar por lotes.
+- **El lag de D2 mejora pero no cumple el SLO durante la falla** (133 s): cada mensaje rechazado cuesta 3 × 2 s. Siguiente paso: timeout más corto hacia SAP o más concurrencia.
+- **795 órdenes quedan en la cola de muertos** y requieren revisión manual.
 - **Q2 caliente empeora con las sentencias preparadas** (+14 a +20 %, por el plan genérico); cumple igual por margen.
 - **A1 corregida cambia lentitud por errores**, y el timeout de 200 ms no cumple el SLO de 100 ms.
 - **Q1–Q3:** parte de la mejora frente al E2 también es entorno; la parte atribuible es la del paso g.
