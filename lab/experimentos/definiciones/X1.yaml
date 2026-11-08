@@ -1,0 +1,10 @@
+# Experimento X1 — Falla combinada B2 + D2 (sustentación final)
+# Lock de 30 s cada 60 s sobre las franjas del CEDI 5 (ruta de escritura, pool compartido)
+# + ext-sap tarda 2 s y responde 503 en el 40 % de las llamadas (outbox / worker).
+# Ambas se activan al mismo tiempo; el kill switch las apaga juntas.
+id: X1
+familia: combinada
+descripcion: B2 (lock en franjas CEDI 5) + D2 (ext-sap 503 40 % tras 2 s) simultáneas
+fallas:
+  - {falla: B2, configuracion: {parametros: {cedi_id: 5, retencion_s: 30, ciclo_s: 60}}}
+  - {falla: D2, configuracion: {probabilidad: 0.40, ms_fijos: 2000}}
