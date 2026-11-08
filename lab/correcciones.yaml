@@ -23,7 +23,7 @@ worker:                # D2: retry con backoff + jitter, mensajes muertos y circ
   max_intentos: 3      # al 3.er fallo el evento pasa a ordenes.outbox_muerto
   concurrencia: 25     # v2: llamadas a ext-sap en paralelo por lote (1 = en serie, la versión de X1-corr_20261108T223627Z)
   backoff: {base_ms: 100, factor: 2, jitter: 0.5}   # ~100, ~200 ms (+ hasta 50 %), sin bloquear el lote
-  breaker: {fallos_para_abrir: 5, semiabierto_tras_s: 30}
+  breaker: {fallos_para_abrir: 20, semiabierto_tras_s: 30}   # v2: con 5, el 40 % de mensajes rechazados lo abría sin que SAP estuviera caído
 
 # Qué correcciones enciende CORRECCION=on en cada experimento (misma falla y misma semilla).
 experimentos:
