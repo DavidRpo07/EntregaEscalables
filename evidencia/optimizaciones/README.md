@@ -241,3 +241,22 @@ una `linea_base.py medir --repeticiones 3`; se reporta la mediana de las 3 ronda
 - **Decisión:** se conserva como opción de medición (`PREPARADAS=on`), justificada por el mecanismo y
   por la mejora repetible del p50 de Q4. Queda pendiente repetir la tabla final con el host en reposo
   para confirmar el efecto en las colas.
+
+### g.1 Tabla final con preparadas (2026-11-08)
+
+`PREPARADAS=on make linea-base MEDIANA_Q1_Q3=on MEDIANA_Q4_Q5=on`, dos corridas con 7 min de diferencia:
+
+| Corrida | Condición del host | Métricas Q1–Q5 que cumplen | Fase 4 |
+|---|---|---|---|
+| `20261108T202644Z` | cargado (app de Claude ~180 % CPU, Chrome) | 9 / 30 | 494,71 req/s |
+| `20261108T203314Z` | en reposo, solo terminal y Docker | **30 / 30** | **1.121,23 req/s** |
+
+- **Controles** de la corrida en reposo: Q4 y Q5 *antes del índice* (mismo SQL y plan que el E2) dan
+  0,66–1,43 × E2, es decir, iguales o más lentos que el E2. El entorno no favorece la medición, así
+  que el cumplimiento de Q4 y Q5 *con índice* se atribuye a las optimizaciones (d: índices INCLUDE +
+  VACUUM; g: sentencias preparadas), no al host.
+- **Q1–Q3** no cambiaron de SQL: su cumplimiento sigue dependiendo del entorno (ver e).
+- **Sensibilidad al host:** la misma medición varió hasta ~2× entre las dos corridas. Ese es el motivo
+  de usar mediana de 3 y filas de control, y de declarar las condiciones del host.
+- **Tabla final oficial:** `evidencia/linea_base/20261108T203314Z/tabla_final.md` (línea base E3
+  `20261017T034200Z` vs. final). Reemplaza a `20261017T044939Z`.
