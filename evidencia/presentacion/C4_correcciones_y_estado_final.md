@@ -80,7 +80,4 @@ Control: Q4 y Q5 *antes del índice* (mismo SQL que el E2) dieron 0,66–1,43 ×
 
 ## Demo del estado final (en vivo, después de la demo del criterio 2)
 
-```bash
-make experimento-prueba ID=X1 CORRECCION=on      # ~90 s: baseline, falla, recuperación con correcciones
-```
-Mostrar en Grafana la fila **Correcciones**: bulkhead en uso por pool, `lock_timeout`/s, worker con reintentos y muertos.
+Ver el paso 5 de `evidencia/demo/GUION_DEMO.md`: correcciones en caliente con `PUT /admin/correcciones`, la misma inyección de X1 y los mismos paneles para comparar (capturas `10` a `13`).

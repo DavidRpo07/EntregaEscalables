@@ -1,6 +1,6 @@
 # Guion de la demo en vivo — Criterio 2 (estado inicial + falla combinada X1)
 
-Duración: **~8 min**. Falla mostrada: **X1 = B2 (lock en franjas del CEDI 5) + D2 (ext-sap 503 en 40 % tras 2 s)**.
+Duración: **~8 min** el estado inicial (pasos 1–4) + **~6 min** el estado final (paso 5). Falla mostrada: **X1 = B2 (lock en franjas del CEDI 5) + D2 (ext-sap 503 en 40 % tras 2 s)**.
 Ensayada el 2026-11-08 (21:26–21:32 UTC); las capturas de esta carpeta salen de ese ensayo y son el **plan B**.
 
 Roles sugeridos (ajustar a los integrantes):
@@ -130,6 +130,60 @@ Si sobra tiempo, apuntar a la evidencia de la corrida completa: `evidencia/resul
 
 ---
 
+## 5. Estado final — la misma falla con las correcciones (criterio 4, ≈ 6 min)
+
+Ensayado el 2026-11-08 (23:31–23:37 UTC); capturas `10` a `13`. Puede ir justo después del paso 4, con el lab ya arriba.
+
+**Persona A** deja el sistema limpio y enciende las correcciones **en caliente** (sin redesplegar, igual que las fallas):
+
+```bash
+make lab-reset
+curl -X PUT localhost:8080/admin/correcciones -H 'Content-Type: application/json' -d '{"activas":["bulkhead","worker"]}'
+make lab-carga DURACION=7m ETIQUETA=demo-final
+```
+
+Esperar **~1,5 min** de baseline: al arrancar la carga con el bulkhead (pool de escritura de 3) hay un pico breve de
+~3 s por el calentamiento del pool, y no conviene que se mezcle con la falla.
+
+> **Qué decir:** "Encendemos dos correcciones: el bulkhead (pools separados para lectura y escritura, `lock_timeout` de 1 s)
+> y el worker corregido (reintentos con backoff, cola de muertos, llamadas a SAP en paralelo y breaker calibrado)."
+
+Después, **la misma inyección** del paso 2:
+
+```bash
+curl -X POST localhost:8080/admin/faults -H 'Content-Type: application/json' -d '{"id":"B2","duracion_s":300}'
+curl -X POST localhost:8080/admin/faults -H 'Content-Type: application/json' -d '{"id":"D2","duracion_s":300}'
+```
+
+Esperar ~90 s y mostrar, en los mismos paneles que en la demo inicial:
+
+| Panel | Demo inicial (sin corrección) | Estado final (con corrección) | Captura |
+|---|---|---|---|
+| Errores 5xx | ~25 % | **~8 %** | `10_final_resumen_con_correcciones` |
+| p99 POST | picos de ~27 s | **mesetas de ~1,4 s** (el `lock_timeout` corta a 1 s) | `10` |
+| Outbox: publicados | **caen a 0** | **siguen saliendo** (~4–5/s) | `11_final_outbox_con_correcciones` |
+| Fila *Correcciones* | — | bulkhead y worker activos, breaker ext_sap **cerrado**, picos de `lock_timeout` cada 60 s, mensajes a la cola de muertos | `12_final_fila_correcciones` |
+
+> **Qué decir:** "El lock sigue ahí cada 60 s, pero ya no se contagia: solo fallan, y en 1 s, las órdenes que chocan con él.
+> El outbox sigue publicando aunque SAP rechace el 40 %, porque los mensajes rechazados van a la cola de muertos
+> y las llamadas van en paralelo. Lo que no logramos: el lag sigue creciendo durante la falla, porque cada rechazo
+> cuesta 3 intentos de 2 s y el worker no tiene capacidad suficiente."
+
+Kill switch y apagar las correcciones al final:
+
+```bash
+curl -X DELETE localhost:8080/admin/faults
+curl -X PUT localhost:8080/admin/correcciones -H 'Content-Type: application/json' -d '{"activas":[]}'
+```
+
+Captura `13_final_recuperacion`: 0 % de errores, p95 ~10 ms y lag del outbox de **65 ms** en ~1 min
+(sin corrección tardaba ~2 min en drenar).
+
+Evidencia completa (5 min de falla, cuatro versiones comparadas):
+`evidencia/results/X1-corr-worker-paralelo-v2_20261108T231125Z/analisis.md`.
+
+---
+
 ## Plan B (si el entorno falla en vivo)
 
 La rúbrica dice que una demo fallida por el entorno se evalúa según las evidencias alternativas y la preparación.
@@ -143,6 +197,7 @@ La rúbrica dice que una demo fallida por el entorno se evalúa según las evide
 
 Capturas en orden de narración: `1_estado_inicial` → `2_falla_resumen` → `3_falla_pool` → `5_falla_locks_postgres`
 → `6_traza_jaeger_espera` → `4_falla_outbox_y_fallas` + `7_logs_worker_head_of_line.txt` → `8_recuperacion_antes_durante_despues` → `9_recuperacion_outbox`.
+Estado final: `10_final_resumen_con_correcciones` → `11_final_outbox_con_correcciones` → `12_final_fila_correcciones` → `13_final_recuperacion`.
 
 ## Después de la demo
 
