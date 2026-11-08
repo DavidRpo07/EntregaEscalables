@@ -1,7 +1,12 @@
+import os
 import time
 import random
 import statistics
 import psycopg2
+
+# Optimización g (E3): PREPARADAS=on usa PREPARE/EXECUTE (misma consulta; parse y plan una vez
+# por conexión). Sin la variable, la medición es idéntica a la del E2.
+PREPARADAS = os.environ.get("PREPARADAS") == "on"
 from registrar_evidencia import escribir_mediciones
 
 # Conexión a la base de datos
@@ -23,6 +28,12 @@ sql_q1 = """
     WHERE p.proveedor_id = %s;
 """
 
+if PREPARADAS:
+    _sql = sql_q1.strip().rstrip(";")
+    for _i in range(2):
+        _sql = _sql.replace("%s", f"${_i + 1}", 1)
+    cursor.execute(f"PREPARE q1 AS {_sql}")
+
 def medir_escenario(ids_list, fecha_evaluacion="2026-09-16 10:00:00-05"):
     tiempos = []
     mediciones = []
@@ -31,7 +42,7 @@ def medir_escenario(ids_list, fecha_evaluacion="2026-09-16 10:00:00-05"):
         prov_id = rng.choice(ids_list)
         t_inicio = time.perf_counter_ns()
         
-        cursor.execute(sql_q1, (fecha_evaluacion, prov_id))
+        cursor.execute("EXECUTE q1(%s,%s)" if PREPARADAS else sql_q1, (fecha_evaluacion, prov_id))
         cursor.fetchall()
         
         t_fin = time.perf_counter_ns()

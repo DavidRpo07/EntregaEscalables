@@ -260,3 +260,25 @@ una `linea_base.py medir --repeticiones 3`; se reporta la mediana de las 3 ronda
   de usar mediana de 3 y filas de control, y de declarar las condiciones del host.
 - **Tabla final oficial:** `evidencia/linea_base/20261108T203314Z/tabla_final.md` (línea base E3
   `20261017T034200Z` vs. final). Reemplaza a `20261017T044939Z`.
+
+### g.2 Sentencias preparadas en Q1–Q3 (2026-11-08)
+
+Mismo cambio en `datos/medir_q1.py`, `medir_q2.py` y `medir_q3.py` (`PREPARADAS=on`), mismo protocolo
+que g: 3 rondas intercaladas control → preparadas, cada una con mediana de 3
+(`g_preparadas_q1q3_v2/comparacion.md`). Con esto Q1–Q3 dejan de ser solo filas de control: su
+mejora tiene un mecanismo medido.
+
+| Consulta | Efecto de las preparadas | Rondas a favor |
+|---|---|---|
+| Q1 | −14 % a −37 % en los 6 percentiles | 3/3 en todos |
+| Q2 frío | −10 % a −12 % | 3/3 |
+| **Q2 caliente** | **+14 % a +20 % (empeora)** | 0/3 |
+| Q3 | −3 % a −9 % (p99 caliente sin cambio) | 3/3 en 5 de 6 |
+
+- **Q2 caliente empeora con el plan genérico.** Tras 5 ejecuciones PostgreSQL reutiliza un plan que
+  no ve el proveedor ni la lista de SKU; para los proveedores calientes ese plan es peor. Con
+  `plan_cache_mode = force_custom_plan` (`Q2_PLAN_CUSTOM=on`, corridas `prepcustom_*`) Q2 caliente
+  vuelve a valores del control o mejores (p95 0,389 ms, p99 0,458 ms), pero se pierde la mejora de Q2
+  frío. Queda como trade-off documentado: con o sin plan a la medida, Q2 cumple el objetivo en todas
+  las métricas, porque el margen frente al E2 es amplio.
+- `g_preparadas_q1q3/` es una corrida abortada (fallo de Q1 corregido) con solo `ctrl_1`; no se usa.

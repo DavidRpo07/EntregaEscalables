@@ -2,9 +2,14 @@
 import csv
 import math
 import random
+import os
 import time
 from pathlib import Path
 import psycopg2
+
+# Optimización g (E3): PREPARADAS=on usa PREPARE/EXECUTE (misma consulta; parse y plan una vez
+# por conexión). Sin la variable, la medición es idéntica a la del E2.
+PREPARADAS = os.environ.get("PREPARADAS") == "on"
 from registrar_evidencia import escribir_mediciones
 
 DB_CONFIG = {
@@ -106,7 +111,7 @@ def medir_escenario(cursor, pool_parametros):
 
     for ejecucion, (p_id, skus) in enumerate(pool_parametros, start=1):
         inicio = time.perf_counter()
-        cursor.execute(QUERY_Q2, (p_id, skus, FECHA_EVALUACION))
+        cursor.execute("EXECUTE q2(%s,%s,%s)" if PREPARADAS else QUERY_Q2, (p_id, skus, FECHA_EVALUACION))
         cursor.fetchall()
         fin = time.perf_counter()
         latencia = (fin - inicio) * 1000
@@ -142,6 +147,14 @@ def main():
 
     conn = psycopg2.connect(**DB_CONFIG)
     cursor = conn.cursor()
+    if PREPARADAS:
+        _sql = QUERY_Q2.strip().rstrip(";")
+        for _i in range(3):
+            _sql = _sql.replace("%s", f"${_i + 1}", 1)
+        cursor.execute(f"PREPARE q2 AS {_sql}")
+        if os.environ.get("Q2_PLAN_CUSTOM") == "on":
+            # Q2 caliente empeora con el plan genérico; con plan a la medida se conserva solo el ahorro del parse
+            cursor.execute("SET plan_cache_mode = force_custom_plan")
 
     print("\n==============================================")
     print("MEDICIÓN Q2 CON PARÁMETROS VARIADOS (200 RUNS)")
