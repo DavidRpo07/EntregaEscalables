@@ -31,3 +31,4 @@ experimentos:
   B1: [bulkhead]
   B2: [bulkhead]
   D2: [worker]
+  X1: [bulkhead, worker]   # combinada B2 + D2: las correcciones de cada una
