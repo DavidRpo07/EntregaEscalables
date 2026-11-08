@@ -258,7 +258,7 @@ una `linea_base.py medir --repeticiones 3`; se reporta la mediana de las 3 ronda
 - **Q1–Q3** no cambiaron de SQL: su cumplimiento sigue dependiendo del entorno (ver e).
 - **Sensibilidad al host:** la misma medición varió hasta ~2× entre las dos corridas. Ese es el motivo
   de usar mediana de 3 y filas de control, y de declarar las condiciones del host.
-- **Tabla final oficial:** `evidencia/linea_base/20261108T203314Z/tabla_final.md` (línea base E3
+- **Tabla final oficial:** `evidencia/linea_base/20261108T205729Z/tabla_final.md` (preparadas en Q1–Q5, host en reposo; línea base E3
   `20261017T034200Z` vs. final). Reemplaza a `20261017T044939Z`.
 
 ### g.2 Sentencias preparadas en Q1–Q3 (2026-11-08)
@@ -282,3 +282,9 @@ mejora tiene un mecanismo medido.
   frío. Queda como trade-off documentado: con o sin plan a la medida, Q2 cumple el objetivo en todas
   las métricas, porque el margen frente al E2 es amplio.
 - `g_preparadas_q1q3/` es una corrida abortada (fallo de Q1 corregido) con solo `ctrl_1`; no se usa.
+
+### g.3 Tabla final oficial (preparadas en Q1–Q5)
+
+`20261108T205729Z`, host en reposo y solo `postgres-escalables` corriendo: **30/30** métricas de
+Q1–Q5 cumplen 0,90 × E2 y la Fase 4 da 1.081,5 req/s (objetivo ≥ 459,66). Reemplaza como oficial a
+`20261108T203314Z`, que se midió con Q1–Q3 sin preparar.
