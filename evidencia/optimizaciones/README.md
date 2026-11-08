@@ -213,3 +213,31 @@ base recargada (el CLUSTER la había reordenado) y con la mediana de 3 también 
 MEDIANA_Q4_Q5=on`). La corrida final anterior (`20261017T035415Z`, mismo código) queda como repetición:
 19/30 frente a 20/30 objetivos de consultas; difieren por el ruido del entorno (p. ej. Q3 frío p95 0,161
 frente a 0,497 ms: una de las tres repeticiones nuevas dio 0,727).
+
+## g. Sentencias preparadas en Q4 y Q5 (2026-11-08)
+
+Carpeta `g_preparadas/`. `datos/medir_q4.py` y `datos/medir_q5.py` aceptan `PREPARADAS=on`: hacen
+`PREPARE` de la **misma consulta** una vez por conexión y miden `EXECUTE` con los mismos parámetros
+(misma semilla, mismos proveedores frío/caliente, mismo cliente psycopg2 en el host). Sin la variable
+la medición es idéntica a la del E2. Base recargada desde los CSV canónicos (500.000 órdenes) con los
+índices INCLUDE del paso d; lab apagado. Protocolo: 3 rondas intercaladas control → preparadas, cada
+una `linea_base.py medir --repeticiones 3`; se reporta la mediana de las 3 rondas
+(`g_preparadas/comparacion.md`).
+
+| Consulta | Escenario | Métrica | Objetivo | Control | Preparadas | Cambio | Rondas a favor |
+|---|---|---|---|---|---|---|---|
+| Q4 | frío | p50 | 0,322 | 0,424 | **0,317** | −25 % | 3/3 |
+| Q4 | caliente | p50 | 2,555 | 2,428 | **2,249** | −7 % | 3/3 |
+| Q4 | caliente | p99 | 13,033 | 10,821 | 10,442 | −4 % | 3/3 |
+| Q5 | caliente | p50 | 0,225 | 0,308 | 0,286 | −7 % | 2/3 |
+| Q4/Q5 | resto (p95/p99, Q5 frío) | | | | | −7 % a +66 % | 0–2/3 |
+
+- **Lectura:** el efecto es consistente en las medianas (p50) de Q4, donde la planificación del join pesa:
+  Q4 frío p50 pasa a cumplir el objetivo. En Q5 el servidor ya resuelve en ~0,02 ms y el ahorro de
+  planificación queda por debajo del ruido de la red de Docker Desktop.
+- **Ruido:** esta sesión tuvo el host cargado (load average ~5,6 por otras aplicaciones). El propio
+  control dio colas 2–5× peores que en octubre (Q5 frío p99 1,09 ms frente a 0,199 ms), así que los
+  p95/p99 de este paso no son concluyentes ni comparables con la tabla oficial.
+- **Decisión:** se conserva como opción de medición (`PREPARADAS=on`), justificada por el mecanismo y
+  por la mejora repetible del p50 de Q4. Queda pendiente repetir la tabla final con el host en reposo
+  para confirmar el efecto en las colas.
