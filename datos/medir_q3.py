@@ -2,9 +2,14 @@
 import calendar
 import math
 import random
+import os
 import time
 from datetime import datetime, timedelta
 import psycopg2
+
+# Optimización g (E3): PREPARADAS=on usa PREPARE/EXECUTE (misma consulta; parse y plan una vez
+# por conexión). Sin la variable, la medición es idéntica a la del E2.
+PREPARADAS = os.environ.get("PREPARADAS") == "on"
 from registrar_evidencia import escribir_mediciones
 
 DB_CONFIG = {
@@ -101,7 +106,7 @@ def medir_escenario(cursor, pool_parametros):
 
     for ejecucion, (cedi_id, fecha) in enumerate(pool_parametros, start=1):
         inicio = time.perf_counter()
-        cursor.execute(QUERY_Q3, (cedi_id, fecha))
+        cursor.execute("EXECUTE q3(%s,%s)" if PREPARADAS else QUERY_Q3, (cedi_id, fecha))
         cursor.fetchall()
         fin = time.perf_counter()
         latencia = (fin - inicio) * 1000
@@ -135,6 +140,11 @@ def main():
 
     conn = psycopg2.connect(**DB_CONFIG)
     cursor = conn.cursor()
+    if PREPARADAS:
+        _sql = QUERY_Q3.strip().rstrip(";")
+        for _i in range(2):
+            _sql = _sql.replace("%s", f"${_i + 1}", 1)
+        cursor.execute(f"PREPARE q3 AS {_sql}")
 
     print("\n==============================================")
     print("MEDICIÓN Q3 CON PARÁMETROS VARIADOS (200 RUNS)")

@@ -30,7 +30,7 @@ DEFECTOS = {
                  "breaker": {"fallos_para_abrir": 5, "semiabierto_tras_s": 30}},
     "bulkhead": {"activa": False, "pool_escritura": 3, "pool_lectura": 2,
                  "pool_timeout_ms": 500, "lock_timeout_ms": 1000},
-    "worker": {"activa": False, "max_intentos": 3,
+    "worker": {"activa": False, "max_intentos": 3, "concurrencia": 1,
                "backoff": {"base_ms": 100, "factor": 2, "jitter": 0.5},
                "breaker": {"fallos_para_abrir": 5, "semiabierto_tras_s": 30}},
 }

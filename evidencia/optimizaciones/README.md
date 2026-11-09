@@ -213,3 +213,78 @@ base recargada (el CLUSTER la había reordenado) y con la mediana de 3 también 
 MEDIANA_Q4_Q5=on`). La corrida final anterior (`20261017T035415Z`, mismo código) queda como repetición:
 19/30 frente a 20/30 objetivos de consultas; difieren por el ruido del entorno (p. ej. Q3 frío p95 0,161
 frente a 0,497 ms: una de las tres repeticiones nuevas dio 0,727).
+
+## g. Sentencias preparadas en Q4 y Q5 (2026-11-08)
+
+Carpeta `g_preparadas/`. `datos/medir_q4.py` y `datos/medir_q5.py` aceptan `PREPARADAS=on`: hacen
+`PREPARE` de la **misma consulta** una vez por conexión y miden `EXECUTE` con los mismos parámetros
+(misma semilla, mismos proveedores frío/caliente, mismo cliente psycopg2 en el host). Sin la variable
+la medición es idéntica a la del E2. Base recargada desde los CSV canónicos (500.000 órdenes) con los
+índices INCLUDE del paso d; lab apagado. Protocolo: 3 rondas intercaladas control → preparadas, cada
+una `linea_base.py medir --repeticiones 3`; se reporta la mediana de las 3 rondas
+(`g_preparadas/comparacion.md`).
+
+| Consulta | Escenario | Métrica | Objetivo | Control | Preparadas | Cambio | Rondas a favor |
+|---|---|---|---|---|---|---|---|
+| Q4 | frío | p50 | 0,322 | 0,424 | **0,317** | −25 % | 3/3 |
+| Q4 | caliente | p50 | 2,555 | 2,428 | **2,249** | −7 % | 3/3 |
+| Q4 | caliente | p99 | 13,033 | 10,821 | 10,442 | −4 % | 3/3 |
+| Q5 | caliente | p50 | 0,225 | 0,308 | 0,286 | −7 % | 2/3 |
+| Q4/Q5 | resto (p95/p99, Q5 frío) | | | | | −7 % a +66 % | 0–2/3 |
+
+- **Lectura:** el efecto es consistente en las medianas (p50) de Q4, donde la planificación del join pesa:
+  Q4 frío p50 pasa a cumplir el objetivo. En Q5 el servidor ya resuelve en ~0,02 ms y el ahorro de
+  planificación queda por debajo del ruido de la red de Docker Desktop.
+- **Ruido:** esta sesión tuvo el host cargado (load average ~5,6 por otras aplicaciones). El propio
+  control dio colas 2–5× peores que en octubre (Q5 frío p99 1,09 ms frente a 0,199 ms), así que los
+  p95/p99 de este paso no son concluyentes ni comparables con la tabla oficial.
+- **Decisión:** se conserva como opción de medición (`PREPARADAS=on`), justificada por el mecanismo y
+  por la mejora repetible del p50 de Q4. Queda pendiente repetir la tabla final con el host en reposo
+  para confirmar el efecto en las colas.
+
+### g.1 Tabla final con preparadas (2026-11-08)
+
+`PREPARADAS=on make linea-base MEDIANA_Q1_Q3=on MEDIANA_Q4_Q5=on`, dos corridas con 7 min de diferencia:
+
+| Corrida | Condición del host | Métricas Q1–Q5 que cumplen | Fase 4 |
+|---|---|---|---|
+| `20261108T202644Z` | cargado (app de Claude ~180 % CPU, Chrome) | 9 / 30 | 494,71 req/s |
+| `20261108T203314Z` | en reposo, solo terminal y Docker | **30 / 30** | **1.121,23 req/s** |
+
+- **Controles** de la corrida en reposo: Q4 y Q5 *antes del índice* (mismo SQL y plan que el E2) dan
+  0,66–1,43 × E2, es decir, iguales o más lentos que el E2. El entorno no favorece la medición, así
+  que el cumplimiento de Q4 y Q5 *con índice* se atribuye a las optimizaciones (d: índices INCLUDE +
+  VACUUM; g: sentencias preparadas), no al host.
+- **Q1–Q3** no cambiaron de SQL: su cumplimiento sigue dependiendo del entorno (ver e).
+- **Sensibilidad al host:** la misma medición varió hasta ~2× entre las dos corridas. Ese es el motivo
+  de usar mediana de 3 y filas de control, y de declarar las condiciones del host.
+- **Tabla final oficial:** `evidencia/linea_base/20261108T205729Z/tabla_final.md` (preparadas en Q1–Q5, host en reposo; línea base E3
+  `20261017T034200Z` vs. final). Reemplaza a `20261017T044939Z`.
+
+### g.2 Sentencias preparadas en Q1–Q3 (2026-11-08)
+
+Mismo cambio en `datos/medir_q1.py`, `medir_q2.py` y `medir_q3.py` (`PREPARADAS=on`), mismo protocolo
+que g: 3 rondas intercaladas control → preparadas, cada una con mediana de 3
+(`g_preparadas_q1q3_v2/comparacion.md`). Con esto Q1–Q3 dejan de ser solo filas de control: su
+mejora tiene un mecanismo medido.
+
+| Consulta | Efecto de las preparadas | Rondas a favor |
+|---|---|---|
+| Q1 | −14 % a −37 % en los 6 percentiles | 3/3 en todos |
+| Q2 frío | −10 % a −12 % | 3/3 |
+| **Q2 caliente** | **+14 % a +20 % (empeora)** | 0/3 |
+| Q3 | −3 % a −9 % (p99 caliente sin cambio) | 3/3 en 5 de 6 |
+
+- **Q2 caliente empeora con el plan genérico.** Tras 5 ejecuciones PostgreSQL reutiliza un plan que
+  no ve el proveedor ni la lista de SKU; para los proveedores calientes ese plan es peor. Con
+  `plan_cache_mode = force_custom_plan` (`Q2_PLAN_CUSTOM=on`, corridas `prepcustom_*`) Q2 caliente
+  vuelve a valores del control o mejores (p95 0,389 ms, p99 0,458 ms), pero se pierde la mejora de Q2
+  frío. Queda como trade-off documentado: con o sin plan a la medida, Q2 cumple el objetivo en todas
+  las métricas, porque el margen frente al E2 es amplio.
+- `g_preparadas_q1q3/` es una corrida abortada (fallo de Q1 corregido) con solo `ctrl_1`; no se usa.
+
+### g.3 Tabla final oficial (preparadas en Q1–Q5)
+
+`20261108T205729Z`, host en reposo y solo `postgres-escalables` corriendo: **30/30** métricas de
+Q1–Q5 cumplen 0,90 × E2 y la Fase 4 da 1.081,5 req/s (objetivo ≥ 459,66). Reemplaza como oficial a
+`20261108T203314Z`, que se midió con Q1–Q3 sin preparar.

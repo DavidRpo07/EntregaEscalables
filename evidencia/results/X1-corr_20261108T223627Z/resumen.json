@@ -1,0 +1,180 @@
+{
+  "run": "X1-corr_20261108T223627Z",
+  "experimento": "X1",
+  "prueba": false,
+  "correcciones": [
+    "bulkhead",
+    "worker"
+  ],
+  "trazas": 40,
+  "marcas_utc": {
+    "baseline": "2026-11-08T22:36:35.614+00:00",
+    "falla_on": "2026-11-08T22:41:35.627+00:00",
+    "kill": "2026-11-08T22:46:35.834+00:00",
+    "fin": "2026-11-08T22:48:37.672+00:00"
+  },
+  "por_fase": {
+    "baseline": {
+      "peticiones": 6001,
+      "throughput_rps": 20.0,
+      "post": {
+        "n": 4225,
+        "p50_ms": 7.1,
+        "p95_ms": 11.4,
+        "p99_ms": 24.3,
+        "max_ms": 35.9
+      },
+      "todas": {
+        "p50_ms": 5.9,
+        "p95_ms": 10.9,
+        "p99_ms": 23.0
+      },
+      "por_op": {
+        "crear": {
+          "n": 4225,
+          "p95_ms": 11.4
+        },
+        "listar": {
+          "n": 1192,
+          "p95_ms": 7.2
+        },
+        "precio": {
+          "n": 584,
+          "p95_ms": 6.5
+        }
+      },
+      "codigos": {
+        "200": 1776,
+        "201": 4225
+      },
+      "errores_pct": 0.0,
+      "no_enviadas": 0,
+      "planificadas": 6001,
+      "errores_pct_planificada": 0.0,
+      "peor_ventana_errores_enviadas_pct": 0.0,
+      "peor_ventana_errores_pct": 0.0,
+      "lag_max_s": 1.1,
+      "cumple": {
+        "p95": true,
+        "p99": true,
+        "errores": true,
+        "lag": true
+      }
+    },
+    "falla": {
+      "peticiones": 6004,
+      "throughput_rps": 20.0,
+      "post": {
+        "n": 4196,
+        "p50_ms": 8.4,
+        "p95_ms": 1010.1,
+        "p99_ms": 1116.0,
+        "max_ms": 1463.0
+      },
+      "todas": {
+        "p50_ms": 6.8,
+        "p95_ms": 1008.5,
+        "p99_ms": 1026.9
+      },
+      "por_op": {
+        "crear": {
+          "n": 4196,
+          "p95_ms": 1010.1
+        },
+        "listar": {
+          "n": 1219,
+          "p95_ms": 7.3
+        },
+        "precio": {
+          "n": 589,
+          "p95_ms": 6.7
+        }
+      },
+      "codigos": {
+        "200": 1808,
+        "201": 3722,
+        "503": 474
+      },
+      "errores_pct": 7.895,
+      "no_enviadas": 0,
+      "planificadas": 6004,
+      "errores_pct_planificada": 7.895,
+      "peor_ventana_errores_enviadas_pct": 9.0,
+      "peor_ventana_errores_pct": 9.0,
+      "lag_max_s": 294.1,
+      "cumple": {
+        "p95": false,
+        "p99": false,
+        "errores": false,
+        "lag": false
+      }
+    },
+    "recuperacion": {
+      "peticiones": 2396,
+      "throughput_rps": 20.01,
+      "post": {
+        "n": 1665,
+        "p50_ms": 6.5,
+        "p95_ms": 10.9,
+        "p99_ms": 23.7,
+        "max_ms": 37.7
+      },
+      "todas": {
+        "p50_ms": 5.5,
+        "p95_ms": 10.2,
+        "p99_ms": 22.7
+      },
+      "por_op": {
+        "crear": {
+          "n": 1665,
+          "p95_ms": 10.9
+        },
+        "listar": {
+          "n": 456,
+          "p95_ms": 6.6
+        },
+        "precio": {
+          "n": 275,
+          "p95_ms": 6.2
+        }
+      },
+      "codigos": {
+        "200": 731,
+        "201": 1665
+      },
+      "errores_pct": 0.0,
+      "no_enviadas": 0,
+      "planificadas": 2396,
+      "errores_pct_planificada": 0.0,
+      "peor_ventana_errores_enviadas_pct": 0.0,
+      "peor_ventana_errores_pct": 0.0,
+      "lag_max_s": 314.1,
+      "cumple": {
+        "p95": true,
+        "p99": true,
+        "errores": true,
+        "lag": false
+      }
+    }
+  },
+  "recuperacion": {
+    "recuperado": false,
+    "cliente_s": 0.0,
+    "lag_s": null
+  },
+  "slo": {
+    "p95_post_ms": 100,
+    "p99_post_ms": 250,
+    "errores_pct": 1.0,
+    "ventana_errores_s": 60,
+    "lag_outbox_s": 10,
+    "recuperacion_s": 20
+  },
+  "inyecciones": 22,
+  "claves_expuestas_durante_falla": 6004,
+  "no_enviadas_total": 0,
+  "enlaces": {
+    "grafana": "http://localhost:3000/d/lab-entregable3?from=1794177365614&to=1794178132672",
+    "jaeger": "http://localhost:16686/search?service=ordenes-api&start=1794177695627409&end=1794177995834437"
+  }
+}

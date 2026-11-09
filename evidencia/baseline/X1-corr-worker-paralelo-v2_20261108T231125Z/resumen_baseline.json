@@ -1,0 +1,50 @@
+{
+  "run": "X1-corr-worker-paralelo-v2_20261108T231125Z",
+  "desde_utc": "2026-11-08T23:11:32.747+00:00",
+  "hasta_utc": "2026-11-08T23:16:32.858+00:00",
+  "peticiones": 6003,
+  "throughput_rps": 20.0,
+  "post": {
+    "n": 4226,
+    "p50_ms": 6.5,
+    "p95_ms": 12.4,
+    "p99_ms": 27.3,
+    "max_ms": 179.5
+  },
+  "todas": {
+    "p50_ms": 5.6,
+    "p95_ms": 11.7,
+    "p99_ms": 25.9
+  },
+  "por_op": {
+    "crear": {
+      "n": 4226,
+      "p95_ms": 12.4
+    },
+    "listar": {
+      "n": 1192,
+      "p95_ms": 7.6
+    },
+    "precio": {
+      "n": 585,
+      "p95_ms": 7.1
+    }
+  },
+  "codigos": {
+    "200": 1777,
+    "201": 4226
+  },
+  "errores_pct": 0.0,
+  "no_enviadas": 0,
+  "planificadas": 6003,
+  "errores_pct_planificada": 0.0,
+  "peor_ventana_errores_enviadas_pct": 0.0,
+  "peor_ventana_errores_pct": 0.0,
+  "lag_max_s": 0.5,
+  "cumple": {
+    "p95": true,
+    "p99": true,
+    "errores": true,
+    "lag": true
+  }
+}

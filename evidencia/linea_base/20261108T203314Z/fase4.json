@@ -1,0 +1,41 @@
+{
+  "etiqueta": "fase4",
+  "medido_utc": "2026-11-08T20:33:44+00:00",
+  "csv_ordenes": "datos/csv/ordenes_fase4_5k.csv",
+  "restaurar_franjas": false,
+  "preparar_estado": false,
+  "franjas_restauradas": null,
+  "desglose": false,
+  "ordenes": 5000,
+  "exitosas": 1523,
+  "rechazadas": 3477,
+  "motivos": {
+    "ok": 1523,
+    "estado_invalido": 3323,
+    "sin_contrato_vigente": 154
+  },
+  "duracion_s": 1.35833,
+  "throughput_req_s": 1121.23,
+  "costo_medio_ms": 0.2717,
+  "latencia_orden_ms": {
+    "p50": 0.001,
+    "p95": 0.896,
+    "p99": 1.042
+  },
+  "estado_antes": {
+    "reservas_actuales_total": 466687,
+    "franjas_completas": 10001,
+    "franjas_disponibles_sep_2_14": 2126,
+    "franja_tuplas_vivas": 127750,
+    "franja_tuplas_muertas": 0,
+    "orden_compra_filas": 500000
+  },
+  "estado_despues": {
+    "reservas_actuales_total": 468210,
+    "franjas_completas": 10279,
+    "franjas_disponibles_sep_2_14": 1848,
+    "franja_tuplas_vivas": 127750,
+    "franja_tuplas_muertas": 314,
+    "orden_compra_filas": 501523
+  }
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import math
 import random
+import os
 import time
 import psycopg2
 from registrar_evidencia import escribir_mediciones
@@ -12,6 +13,10 @@ DB_CONFIG = {
     "host": "localhost",
     "port": 5432
 }
+
+# Optimización g (E3): PREPARADAS=on usa PREPARE/EXECUTE (misma consulta; parse y plan una vez
+# por conexión). Sin la variable, la medición es idéntica a la del E2.
+PREPARADAS = os.environ.get("PREPARADAS") == "on"
 
 QUERY_Q5 = """
 SELECT 
@@ -75,7 +80,7 @@ def medir_escenario(cursor, prov_ids, num_runs=100):
         p_id = rng.choice(prov_ids)
         offset = rng.choice([0, 50, 100])
         inicio = time.perf_counter()
-        cursor.execute(QUERY_Q5, (p_id, offset))
+        cursor.execute("EXECUTE q5(%s,%s)" if PREPARADAS else QUERY_Q5, (p_id, offset))
         cursor.fetchall()
         fin = time.perf_counter()
         latencia = (fin - inicio) * 1000
@@ -99,6 +104,11 @@ def obtener_explain(cursor, p_id, offset=0):
 def main():
     conn = psycopg2.connect(**DB_CONFIG)
     cursor = conn.cursor()
+    if PREPARADAS:
+        sql = QUERY_Q5.strip().rstrip(";")
+        for i in range(2):
+            sql = sql.replace("%s", f"${i + 1}", 1)
+        cursor.execute(f"PREPARE q5 AS {sql}")
 
     print("==============================================")
     print("SELECCIONANDO PROVEEDORES Y MIDIENDO Q5 BASE")

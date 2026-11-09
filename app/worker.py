@@ -18,6 +18,7 @@ import os
 import signal
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import httpx
 from opentelemetry import propagate
@@ -122,21 +123,51 @@ def procesar_lote(cliente: httpx.Client) -> tuple[int, bool]:
     return publicados, False
 
 
+_EJECUTOR: ThreadPoolExecutor | None = None
+_DIFERIDO = object()   # el breaker no dejó pasar la llamada
+
+
+def _ejecutor(n: int) -> ThreadPoolExecutor:
+    global _EJECUTOR
+    if _EJECUTOR is None or _EJECUTOR._max_workers != n:
+        _EJECUTOR = ThreadPoolExecutor(max_workers=n, thread_name_prefix="publicar")
+    return _EJECUTOR
+
+
 def procesar_lote_corregido(cliente: httpx.Client) -> tuple[int, int, bool]:
     """Corrección D2. Devuelve (publicados, procesados, cortado_por_breaker). Un fallo no
-    corta el lote ni hace esperar al worker: el evento queda reprogramado y se sigue."""
+    corta el lote ni hace esperar al worker: el evento queda reprogramado y se sigue.
+
+    `concurrencia` > 1 (corrección D2 v2): las llamadas a ext-sap del lote van en paralelo
+    (una sola conexión a la BD y la misma transacción; solo el HTTP es concurrente). Con la
+    llamada en serie, cada fallo de ext-sap costaba ~2 s y el worker no alcanzaba la tasa de
+    entrada: el cuello de botella de D2 era la capacidad, no los reintentos."""
     p = CORRECCIONES.parametros("worker")
     bk, breaker = p["backoff"], correcciones.BREAKERS["ext_sap"]
+    concurrencia = max(1, int(p.get("concurrencia", 1)))
     publicados = procesados = 0
     with db.abrir_pool().connection() as conn, conn.cursor() as cur:
         cur.execute(SQL_LOTE_CORREGIDO, (config.WORKER_LOTE,))
-        for outbox_id, orden_id, payload, intentos in cur.fetchall():
+        filas = cur.fetchall()
+
+        def llamar(fila):
+            outbox_id, orden_id, payload, _ = fila
             if not breaker.permite():
-                # Breaker abierto: el resto queda pendiente sin gastar intentos.
+                return _DIFERIDO
+            return publicar(cliente, outbox_id, orden_id, payload)
+
+        if concurrencia > 1:
+            resultados = iter(_ejecutor(concurrencia).map(llamar, filas))
+        else:
+            resultados = (llamar(f) for f in filas)   # perezoso: igual que antes, en serie
+        for (outbox_id, orden_id, payload, intentos), motivo in zip(filas, resultados):
+            if motivo is _DIFERIDO:
+                # Breaker abierto: el evento queda pendiente sin gastar intentos.
                 metricas.OUTBOX_DIFERIDOS.inc()
-                return publicados, procesados, True
+                if concurrencia == 1:
+                    return publicados, procesados, True
+                continue
             procesados += 1
-            motivo = publicar(cliente, outbox_id, orden_id, payload)
             if motivo is None:
                 breaker.exito()
                 cur.execute(SQL_PUBLICADO, (outbox_id,))

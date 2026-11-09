@@ -313,12 +313,21 @@ def cargar_definicion(exp_id: str, slo: dict, prueba: bool, fases_cli: dict) -> 
     if "falla" in d and d["falla"] is None:   # O1: misma carga, sin falla (overhead de observabilidad)
         return {"definicion": d, "archivo": str(ruta.relative_to(RAIZ)), "falla": None, "fases": fases}
     catalogo = {f["id"]: f for f in yaml.safe_load((RAIZ / "lab/fallas/catalogo.yaml").read_text(encoding="utf-8"))["fallas"]}
-    base = catalogo[d.get("falla", exp_id)]
-    falla = {**base, **(d.get("configuracion") or {})}
-    falla.setdefault("duracion_s", None)
-    if not (d.get("configuracion") or {}).get("duracion_s"):
-        falla["duracion_s"] = fases["falla_s"] + 30   # red de seguridad: expira sola
-    falla_desde_dict(dict(falla))                    # valida antes de tocar nada
+
+    def construir(fid, conf):
+        falla = {**catalogo[fid], **(conf or {})}
+        falla.setdefault("duracion_s", None)
+        if not (conf or {}).get("duracion_s"):
+            falla["duracion_s"] = fases["falla_s"] + 30   # red de seguridad: expira sola
+        falla_desde_dict(dict(falla))                    # valida antes de tocar nada
+        return falla
+
+    # Falla combinada: `fallas: [{falla: B2, configuracion: {...}}, ...]` activa varias a la vez;
+    # el kill switch (DELETE /admin/faults) las apaga todas juntas.
+    if d.get("fallas"):
+        falla = [construir(e["falla"], e.get("configuracion")) for e in d["fallas"]]
+    else:
+        falla = construir(d.get("falla", exp_id), d.get("configuracion"))
     return {"definicion": d, "archivo": str(ruta.relative_to(RAIZ)), "falla": falla, "fases": fases}
 
 
@@ -628,7 +637,8 @@ def resumen_md(run, exp, marcas, por_fase, rec, slo, pred, inyecciones, trazas, 
     lineas = [
         f"# Resultado {run}", "",
         f"- Experimento: **{exp['definicion']['id']}** — {exp['definicion']['descripcion']}",
-        (f"- Configuración de la falla: `{json.dumps({k: v for k, v in exp['falla'].items() if k not in ('descripcion',)}, ensure_ascii=False)}`"
+        ("\n".join(f"- Configuración de la falla {f['id']}: `{json.dumps({k: v for k, v in f.items() if k not in ('descripcion',)}, ensure_ascii=False)}`"
+                   for f in (exp["falla"] if isinstance(exp["falla"], list) else [exp["falla"]]))
          if exp["falla"] else "- Sin falla: las tres fases son la misma carga (los nombres de fase quedan solo como marcas de tiempo)"),
         f"- Correcciones: " + (", ".join(f"**{c}** `{json.dumps({k: v for k, v in corr['config'][c].items() if k != 'activa'}, ensure_ascii=False)}`"
                                          for c in corr["activas"]) if corr and corr["activas"] else "ninguna (sistema sin corregir)"),
@@ -740,12 +750,15 @@ def main():
         vigia.esperar_hasta(marcas["baseline"] + fases["baseline_s"])
 
         if exp["falla"] is not None:
-            c, resp = http("POST", f"{API}/admin/faults", exp["falla"])
-            marcas["falla_on"] = ahora()
+            lista = exp["falla"] if isinstance(exp["falla"], list) else [exp["falla"]]
+            for f in lista:
+                c, resp = http("POST", f"{API}/admin/faults", f)
+                if "falla_on" not in marcas:
+                    marcas["falla_on"] = ahora()
+                timeline("falla_activada", codigo=c, config=f)
+                if c != 201:
+                    raise SystemExit(f"no se pudo activar la falla {f.get('id')}: {c} {resp}")
             estado["actual"] = "falla"
-            timeline("falla_activada", codigo=c, config=exp["falla"])
-            if c != 201:
-                raise SystemExit(f"no se pudo activar la falla: {c} {resp}")
         else:
             marcas["falla_on"] = ahora()
             estado["actual"] = "falla"
